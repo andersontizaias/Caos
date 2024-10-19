@@ -1,0 +1,7 @@
+container_type: list_vertical
+    shard: Caos_Example.CaosViewShortcutsChain
+    shard: Caos_Example.CaosViewCard
+    shard: Caos_Example.CaosViewShortcuts
+    shard: Caos_Example.CaosViewCard
+    shard: Caos_Example.CaosViewShortcuts
+    shard: Caos_Example.CaosViewShortcutsChain

@@ -8,6 +8,5 @@ target 'Caos_Example' do
   target 'Caos_Tests' do
     inherit! :search_paths
 
-    pod 'FBSnapshotTestCase' , '~> 2.1.4'
   end
 end
