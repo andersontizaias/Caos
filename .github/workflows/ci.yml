@@ -30,12 +30,27 @@ jobs:
           key: spm-${{ runner.os }}-${{ hashFiles('Package.resolved') }}
           restore-keys: spm-${{ runner.os }}-
 
+      - name: Cache XcodeGen
+        id: cache-xcodegen
+        uses: actions/cache@v4
+        with:
+          path: /opt/homebrew/bin/xcodegen
+          key: xcodegen-${{ runner.os }}-2.42.0
+
+      - name: Install XcodeGen
+        if: steps.cache-xcodegen.outputs.cache-hit != 'true'
+        run: brew install xcodegen
+
+      - name: Generate Xcode Project
+        run: xcodegen generate
+
       - name: Resolve Dependencies
         run: swift package resolve
 
       - name: Build
         run: |
           xcodebuild build-for-testing \
+            -project Caos.xcodeproj \
             -scheme Caos \
             -destination "${{ matrix.destination }}" \
             CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO \
@@ -44,6 +59,7 @@ jobs:
       - name: Test + Coverage
         run: |
           xcodebuild test \
+            -project Caos.xcodeproj \
             -scheme Caos \
             -destination "${{ matrix.destination }}" \
             -enableCodeCoverage YES \
