@@ -2,6 +2,22 @@
 
 Obrigado pelo interesse em contribuir! Siga as diretrizes abaixo.
 
+## Setup do ambiente
+
+```bash
+# Clone e entre no diretório
+git clone https://github.com/andersontizaias/Caos.git
+cd Caos
+
+# Gera o Caos.xcodeproj e o CaosExample.xcodeproj (requer Homebrew)
+make setup
+
+# Abre direto no Xcode
+make open
+```
+
+O `Caos.xcodeproj` é **gerado** pelo XcodeGen e não versionado. A fonte de verdade é o `project.yml`.
+
 ## Fluxo de trabalho
 
 1. Fork o repositório e crie sua branch a partir de `develop`:
@@ -17,12 +33,11 @@ Obrigado pelo interesse em contribuir! Siga as diretrizes abaixo.
    swift test --enable-code-coverage
    ```
 
-4. Abra um Pull Request para `develop` (não para `main`)
+4. Abra um Pull Request para `develop` com título no padrão Conventional Commits
 
 ## Padrões de código
 
 - **Arquitetura MV**: sem ViewModels. Views lêem de `CaosStore` via `@Environment`
-- **Nenhum ViewModel**: o Dangerfile bloqueia PRs com classes contendo "ViewModel"
 - **SwiftLint**: `swiftlint --strict` deve passar com 0 violations
 - **SwiftFormat**: `swiftformat --lint Sources Tests`
 - **iOS 16+**: não use APIs exclusivas de iOS 17+ sem guard de disponibilidade
@@ -30,18 +45,16 @@ Obrigado pelo interesse em contribuir! Siga as diretrizes abaixo.
 
 ## Adicionando um novo tipo de shard
 
-1. Crie sua view conformando a `CaosView` (UIKit) ou `CaosSwiftUIView` (SwiftUI)
+1. Crie sua view conformando a `CaosSwiftUIView`
 2. Documente as `CaosProps` aceitas com tipos e valores padrão
-3. Implemente `configure(with:)`, `showLoading()` e `hideLoading()`
-4. Registre via `CaosStore.register(type:view:)` no app consumidor
-5. Adicione testes unitários cobrindo as props
+3. Registre via `CaosStore.register(type:view:)` no app consumidor
+4. Adicione testes unitários cobrindo as props
 
 ## Adicionando suporte a novas props
 
-1. Aceite o novo campo em `configure(with props: CaosProps)`
-2. Use os acessores tipados: `props.string()`, `props.double()`, `props.color()`
-3. Nunca faça fallback silencioso — use `?? defaultValue` explicitamente
-4. Atualize o README com a nova prop na tabela de referência
+1. Aceite o novo campo em `var body: some View` via `props.string()`, `props.double()`, etc.
+2. Nunca faça fallback silencioso — use `?? defaultValue` explicitamente
+3. Atualize o README com a nova prop na tabela de referência
 
 ## Testes
 
@@ -49,15 +62,49 @@ Obrigado pelo interesse em contribuir! Siga as diretrizes abaixo.
 - Testes devem usar mocks concretos — sem force unwrap em testes
 - Fixtures YAML ficam em `Tests/CaosTests/Fixtures/`
 
-## Commits
+## Commits — Conventional Commits
 
-Use prefixos semânticos:
-- `feat:` — nova funcionalidade
-- `fix:` — correção de bug
-- `refactor:` — refatoração sem mudança de comportamento
-- `test:` — adição ou correção de testes
-- `docs:` — documentação
-- `chore:` — configuração, CI, dependências
+Todo commit e título de PR **devem** seguir o padrão [Conventional Commits](https://www.conventionalcommits.org/). O Danger bloqueia PRs que não seguem o formato.
+
+### Formato
+
+```
+<tipo>(<escopo opcional>): <descrição curta>
+
+[corpo opcional]
+
+[BREAKING CHANGE: <descrição> — opcional]
+```
+
+### Tipos válidos
+
+| Tipo | Quando usar |
+|---|---|
+| `feat` | Nova funcionalidade visível ao usuário |
+| `fix` | Correção de bug |
+| `docs` | Apenas documentação |
+| `style` | Formatação, sem mudança de comportamento |
+| `refactor` | Refatoração sem mudança de comportamento |
+| `test` | Adição ou correção de testes |
+| `chore` | CI, dependências, configuração, build |
+| `perf` | Melhoria de performance |
+| `ci` | Mudanças específicas nos workflows de CI |
+| `build` | Sistema de build, Package.swift, XcodeGen |
+| `revert` | Reverte um commit anterior |
+
+### Exemplos
+
+```bash
+feat: adiciona suporte a container grid horizontal
+fix(parser): corrige crash com YAML sem campo version
+docs: adiciona exemplo de reactive binding no README
+chore: atualiza XcodeGen para 2.43.0
+feat!: remove suporte a YAML v0          # breaking change
+```
+
+### Breaking changes
+
+Adicione `!` após o tipo ou inclua `BREAKING CHANGE:` no corpo para sinalizar que a versão major deve ser incrementada.
 
 ## Código de conduta
 

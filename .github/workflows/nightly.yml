@@ -12,9 +12,28 @@ jobs:
         ios: ["16.0", "17.0", "18.0"]
     steps:
       - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_16.app
+
+      - name: Cache XcodeGen
+        id: cache-xcodegen
+        uses: actions/cache@v4
+        with:
+          path: /opt/homebrew/bin/xcodegen
+          key: xcodegen-${{ runner.os }}-2.42.0
+
+      - name: Install XcodeGen
+        if: steps.cache-xcodegen.outputs.cache-hit != 'true'
+        run: brew install xcodegen
+
+      - name: Generate Xcode Project
+        run: xcodegen generate
+
       - name: Test on iOS ${{ matrix.ios }}
         run: |
           xcodebuild test \
+            -project Caos.xcodeproj \
             -scheme Caos \
             -destination "platform=iOS Simulator,name=iPhone 16,OS=${{ matrix.ios }}" \
             CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO \
@@ -26,5 +45,5 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build via SPM
         run: swift build
-      - name: Test via SPM (macOS — sem UIKit, sem flags de SDK)
+      - name: Test via SPM
         run: swift test --enable-code-coverage

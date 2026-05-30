@@ -322,7 +322,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## Author
 
-**Anderson Tiago Izaias** — andersontizaias@gmail.com
+**Anderson Tiago Izaias** — [@andersontizaias](https://github.com/andersontizaias)
 
 ---
 
