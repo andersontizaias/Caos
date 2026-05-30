@@ -32,7 +32,6 @@ Format: [Semantic Versioning](https://semver.org/).
 - `CaosScreen`: adicionado `id`, `containerConfig: CaosContainer`, `shardList: [CaosShard]`
 - `Caos.configure`: nova sobrecarga aceitando `CaosStore` (compatível com versão anterior)
 - Deployment target: iOS 10.0 → **iOS 16.0**
-- CocoaPods: versão 0.1.0 → **1.0.0**
 - Estrutura de diretórios: reorganizada para `Sources/Caos/{Core,Schema,UI,SwiftUI}/`
 
 ### Deprecated
@@ -57,4 +56,3 @@ Format: [Semantic Versioning](https://semver.org/).
 - `CaosView` protocolo base
 - `CaosEngineDelegate` com `didTapCardView` e `requestDataForLabel`
 - Exemplo de app com `CaosViewCard`, `CaosViewShortcuts`, `CaosViewShortcutsChain`
-- Suporte a CocoaPods (iOS 10+)

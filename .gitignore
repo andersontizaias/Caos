@@ -16,10 +16,7 @@ xcuserdata/
 # XcodeGen — generated Xcode projects (source of truth: project.yml)
 Caos.xcodeproj/
 Example/CaosExample.xcodeproj/
-
-# CocoaPods
-Pods/
-Podfile.lock
+_Pods.xcodeproj
 
 
 # Archives

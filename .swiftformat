@@ -6,5 +6,5 @@
 --commas always
 --semicolons never
 --header strip
---exclude .build,Pods,Example
+--exclude .build,Example
 --disable andOperator
