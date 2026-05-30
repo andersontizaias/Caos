@@ -6,8 +6,9 @@
 [![Swift](https://img.shields.io/badge/Swift-5.9%2B-orange)](https://swift.org)
 [![License](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)
 
-![Caos - The Primeval Void](./assets/caos-image.png)
-*Caos — The Primeval Void in Greek Mythology*
+<p align="center">
+  <img src="./assets/caos-logo.png" alt="Caos Logo" width="400" />
+</p>
 
 **Caos** (**C**onfigurable **A**utomated **O**n-demand **S**creens) is an iOS Server-Driven UI framework that generates SwiftUI screens dynamically from YAML files. Change your UI without redeploying your app.
 
@@ -15,19 +16,33 @@
 
 ## Architecture
 
-```
-┌──────────────────────────────────────────────────────┐
-│                    VIEW LAYER                         │
-│          CaosScreenView  ·  SwiftUI Shards            │
-│              ↓ reads                                  │
-│         @Environment(\.caosStore)                     │
-├──────────────────────────────────────────────────────┤
-│                   MODEL LAYER                         │
-│   CaosStore — providers · publishers · shard registry │
-├──────────────────────────────────────────────────────┤
-│                  SCHEMA LAYER                         │
-│   CaosParser  ·  CaosProps  ·  CaosSchema            │
-└──────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph VIEW["🖼  VIEW LAYER"]
+        SV["CaosScreenView"]
+        SH["SwiftUI Shards"]
+    end
+
+    subgraph MODEL["⚙️  MODEL LAYER"]
+        CS["CaosStore\n─────────────────\nproviders · publishers\nshard registry"]
+    end
+
+    subgraph SCHEMA["📄  SCHEMA LAYER"]
+        CP["CaosParser"]
+        CPR["CaosProps"]
+        CSC["CaosSchema"]
+    end
+
+    SV -->|"@Environment(\\.caosStore)"| CS
+    SH -->|"@Environment(\\.caosStore)"| CS
+    SH -->|"@Environment(\\.caosTapAction)"| CS
+    SV -->|"loads & parses"| CP
+    CP -->|"produces"| CSC
+    CSC -->|"contains"| CPR
+
+    style VIEW fill:#1a1a2e,stroke:#4a4a8a,color:#e0e0ff
+    style MODEL fill:#16213e,stroke:#4a4a8a,color:#e0e0ff
+    style SCHEMA fill:#0f3460,stroke:#4a4a8a,color:#e0e0ff
 ```
 
 Caos follows the **MV (Model-View)** pattern — no ViewModels. `CaosStore` is the Model; views read from it via `@Environment`.
