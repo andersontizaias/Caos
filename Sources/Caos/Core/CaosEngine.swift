@@ -25,7 +25,7 @@ public class CaosEngine {
         self.engine(parse: caosParser)
     }
     
-    //MARK: - Public methods
+    // MARK: - Public methods
     
     public func getScreenByIndex(index: Int) -> UIView {
         return scrollViews[index]
@@ -34,7 +34,7 @@ public class CaosEngine {
     
     // MARK: - Private methods
     
-    private func engine(parse: CaosParser){
+    private func engine(parse: CaosParser) {
         setupScreens(screens: parse.getScreens())
     }
     
@@ -78,7 +78,7 @@ public class CaosEngine {
 
     
     
-    private func createScrollView(stackView: UIStackView)  -> UIScrollView{
+    private func createScrollView(stackView: UIStackView) -> UIScrollView {
             
             let scrollView = UIScrollView()
             scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -124,8 +124,8 @@ public class CaosEngine {
         }
     }
     
-    private func setupScreens(screens:[CaosScreen]) {
-        if screens.count > 0 {
+    private func setupScreens(screens: [CaosScreen]) {
+        if !screens.isEmpty {
             for screen in screens {
                 setupScrollViews(screen: screen)
                 setupShards(screen: screen)

@@ -7,11 +7,18 @@ jobs:
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
+
       - name: Cache SwiftLint
+        id: cache-swiftlint
         uses: actions/cache@v4
         with:
-          path: ~/.swiftlint
-          key: swiftlint-${{ runner.os }}
+          path: /usr/local/bin/swiftlint
+          key: swiftlint-${{ runner.os }}-0.57.0
+
+      - name: Install SwiftLint
+        if: steps.cache-swiftlint.outputs.cache-hit != 'true'
+        run: brew install swiftlint
+
       - name: SwiftLint
         run: swiftlint --strict --reporter github-actions-logging
 
@@ -19,5 +26,17 @@ jobs:
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
+
+      - name: Cache SwiftFormat
+        id: cache-swiftformat
+        uses: actions/cache@v4
+        with:
+          path: /usr/local/bin/swiftformat
+          key: swiftformat-${{ runner.os }}-0.54.0
+
+      - name: Install SwiftFormat
+        if: steps.cache-swiftformat.outputs.cache-hit != 'true'
+        run: brew install swiftformat
+
       - name: SwiftFormat (check only)
-        run: swiftformat --lint Sources Tests
+        run: swiftformat Sources Tests --lint
