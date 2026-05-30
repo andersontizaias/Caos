@@ -13,7 +13,11 @@ xcuserdata/
 *.xccheckout
 *.xcsettings
 
-# Cocoapods
+# XcodeGen — generated Xcode projects (source of truth: project.yml)
+Caos.xcodeproj/
+Example/CaosExample.xcodeproj/
+
+# CocoaPods
 Pods/
 Podfile.lock
 

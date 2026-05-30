@@ -1,0 +1,51 @@
+name: Caos
+options:
+  bundleIdPrefix: com.andersontizaias
+  deploymentTarget:
+    iOS: "16.0"
+  xcodeVersion: "16"
+  createIntermediateGroups: true
+  generateEmptyDirectories: true
+
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+
+targets:
+  Caos:
+    type: framework
+    platform: iOS
+    deploymentTarget: "16.0"
+    sources:
+      - path: Sources/Caos
+    settings:
+      base:
+        SWIFT_STRICT_CONCURRENCY: complete
+
+  CaosTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "16.0"
+    sources:
+      - path: Tests/CaosTests
+        excludes:
+          - "**/*.yaml"
+    resources:
+      - path: Tests/CaosTests/Fixtures
+      - path: Tests/CaosTests/caos_empty_screens.yaml
+      - path: Tests/CaosTests/caos_invalid_version.yaml
+    dependencies:
+      - target: Caos
+
+schemes:
+  Caos:
+    build:
+      targets:
+        Caos: all
+    test:
+      targets:
+        - CaosTests
+    analyze:
+      config: Debug
+    archive:
+      config: Release
