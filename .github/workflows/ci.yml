@@ -68,16 +68,27 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download Test Results
-        uses: actions/download-artifact@v4
-        with:
-          name: "test-results-0"
-
-      - name: Unzip Test Results
-        run: unzip TestResults.zip
+      - name: Test with Coverage
+        run: swift test --enable-code-coverage
 
       - name: Extract Coverage
-        run: xcrun xccov view --report --json TestResults.xcresult > coverage.json
+        run: |
+          BIN_PATH=$(swift build --show-bin-path)
+          BINARY="$BIN_PATH/CaosPackageTests.xctest/Contents/MacOS/CaosPackageTests"
+          PROFDATA="$BIN_PATH/codecov/default.profdata"
+
+          SUMMARY=$(xcrun llvm-cov report "$BINARY" \
+            -instr-profile="$PROFDATA" \
+            -ignore-filename-regex="Tests|\.build" \
+            --summary-only 2>&1 | tail -1)
+          LINE_PCT=$(echo "$SUMMARY" | awk '{for(i=1;i<=NF;i++) if($i ~ /^[0-9]+\.[0-9]+%$/) last=$i; print last}' | tr -d '%')
+          echo "{\"lineCoverage\": $(python3 -c "print(round($LINE_PCT / 100, 4))")}" > coverage.json
+
+          xcrun llvm-cov export "$BINARY" \
+            -instr-profile="$PROFDATA" \
+            -format=lcov \
+            -ignore-filename-regex="Tests|\.build" \
+            > coverage.lcov
 
       - name: Check Coverage Threshold (90%)
         run: python3 scripts/check_coverage.py coverage.json 90
@@ -86,7 +97,7 @@ jobs:
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: coverage.json
+          files: coverage.lcov
 
       - name: Upload Coverage Report
         uses: actions/upload-artifact@v4
