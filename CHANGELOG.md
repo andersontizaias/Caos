@@ -5,6 +5,13 @@ Format: [Semantic Versioning](https://semver.org/).
 
 ---
 
+## 1.0.0 (2026-05-30)
+
+
+### Features
+
+* Caos Evolution — YAML v1, MV architecture, SPM, SwiftUI ([c185179](https://github.com/andersontizaias/Caos/commit/c1851790b9148a3de593ca734b505f703b396aad))
+
 ## [1.0.0] — 2026-05-29
 
 ### Added
