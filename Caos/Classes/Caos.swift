@@ -8,23 +8,24 @@
 import Foundation
 
 public class Caos {
-    
-    //MARK: - static method
-    
-    public static func configure(bundle: Bundle, name:String, target: CaosEngineDelegate) -> CaosEngine? {
-        
+
+    // MARK: - v1 API — with CaosStore
+
+    public static func configure(
+        bundle: Bundle,
+        name: String,
+        target: CaosEngineDelegate,
+        store: CaosStore? = nil
+    ) -> CaosEngine? {
         guard let path = bundle.path(forResource: name, ofType: "yaml") else {
-            fatalError("Caos.bundle not found")
+            fatalError("Caos: '\(name).yaml' not found in bundle")
         }
-        
         do {
             let content = try String(contentsOfFile: path, encoding: .utf8)
-            return  CaosEngine(content: content, target: target)
+            return CaosEngine(content: content, target: target, store: store)
         } catch {
-            print("Erro ao ler o arquivo: \(error.localizedDescription)")
+            print("Caos: error reading '\(name).yaml': \(error.localizedDescription)")
             return nil
         }
-        
     }
-    
 }

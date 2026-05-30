@@ -10,19 +10,19 @@ import Foundation
 
 public class CaosEngine {
     
-    //MARK: - Properties
-    
+    // MARK: - Properties
+
     public weak var delegate: CaosEngineDelegate?
+    public private(set) var store: CaosStore?
     private var scrollViews: [UIScrollView] = []
-    
-    //MARK: - Initializer
-    
-    init(content: String, target: CaosEngineDelegate) {
-        
-        delegate = target
+
+    // MARK: - Initializers
+
+    public init(content: String, target: CaosEngineDelegate, store: CaosStore? = nil) {
+        self.delegate = target
+        self.store = store
         let caosParser = CaosParser(content: content)
         self.engine(parse: caosParser)
-            
     }
     
     //MARK: - Public methods
