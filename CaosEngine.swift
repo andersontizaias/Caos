@@ -97,46 +97,28 @@ public class CaosEngine {
            
     }
     
-    private func randomizeUIColor() -> UIColor {
-        return UIColor(red: CGFloat.random(in: 0...1),
-                       green: CGFloat.random(in: 0...1),
-                       blue: CGFloat.random(in: 0...1),
-                       alpha: 1.0)
-    }
-    
-    
     private func setupScrollViews(screen: CaosScreen) {
-        
-        var scrollView: UIScrollView?
-        
-        if screen.container.contains("vertical") {
-            
-            let vStackView = createVerticalStackView()
-            scrollView = createScrollView(stackView: vStackView)
-        
-        } else {
-            
-            let hStacView = createHorizontalStackView()
-            scrollView = createScrollView(stackView: hStacView)
-            
+        let stackView = screen.containerConfig.type.contains("vertical")
+            ? createVerticalStackView()
+            : createHorizontalStackView()
+        if screen.containerConfig.spacing > 0 {
+            stackView.spacing = screen.containerConfig.spacing
         }
-        
-        if let scrollView = scrollView {
-            scrollViews.append(scrollView)
-        }
+        let scrollView = createScrollView(stackView: stackView)
+        scrollViews.append(scrollView)
     }
-    
+
     private func setupShards(screen: CaosScreen) {
-        let shards = screen.shards
-        
-        if shards.count > 0 {
-            
-            for shard in shards {
-                if let shardView: CaosView = createShardView(className: shard) as? CaosView {
-                    shardView.delegate = delegate
-                    if let stackView = scrollViews.last?.subviews.first as? UIStackView {
-                        stackView.addArrangedSubview(shardView)
-                    }
+        let shards: [CaosShard] = screen.shardList.isEmpty
+            ? screen.shards.map { CaosShard(type: $0) }
+            : screen.shardList
+
+        for shard in shards {
+            if let shardView: CaosView = createShardView(className: shard.type) {
+                shardView.delegate = delegate
+                shardView.configure(with: shard.props)
+                if let stackView = scrollViews.last?.subviews.first as? UIStackView {
+                    stackView.addArrangedSubview(shardView)
                 }
             }
         }

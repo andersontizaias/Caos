@@ -13,7 +13,9 @@ import Caos
 public class CaosViewShortcutsChain: UIView, CaosView {
     
     weak public var delegate: CaosEngineDelegate?
-    
+
+    private let shimmer = CaosShimmerView()
+
     let shardView: UIView = {
         let view = UIView()
         view.backgroundColor = .white
@@ -224,12 +226,20 @@ public class CaosViewShortcutsChain: UIView, CaosView {
         hStackView.addArrangedSubview(cardViewPCancellation)
         shardView.addSubview(hStackView)
         addSubview(shardView)
-        
+
+        shimmer.translatesAutoresizingMaskIntoConstraints = false
+        shimmer.layer.cornerRadius = 15
+        shimmer.clipsToBounds = true
+        addSubview(shimmer)
+
         setupGesture()
-       
+
         NSLayoutConstraint.activate([
-            
-                   self.heightAnchor.constraint(equalToConstant: 130),
+            self.heightAnchor.constraint(equalToConstant: 130),
+            shimmer.topAnchor.constraint(equalTo: topAnchor),
+            shimmer.bottomAnchor.constraint(equalTo: bottomAnchor),
+            shimmer.leadingAnchor.constraint(equalTo: leadingAnchor),
+            shimmer.trailingAnchor.constraint(equalTo: trailingAnchor),
                    shardView.leadingAnchor.constraint(equalTo: self.leadingAnchor,constant: 10),
                    shardView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -10),
                    shardView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
@@ -246,14 +256,13 @@ public class CaosViewShortcutsChain: UIView, CaosView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // Função randomizeUIColor conforme seu código anterior.
-    static func randomizeUIColor() -> UIColor {
-        return UIColor(red: CGFloat.random(in: 0...1),
-                       green: CGFloat.random(in: 0...1),
-                       blue: CGFloat.random(in: 0...1),
-                       alpha: 1.0)
+    public func configure(with props: CaosProps) {
+        if let title = props.string("title") { shardLabel.text = title }
     }
-    
+
+    public func showLoading() { shimmer.startShimmer() }
+    public func hideLoading() { shimmer.stopShimmer() }
+
     func setupGesture() {
         let tapSimulador = UITapGestureRecognizer(target: self, action: #selector(handleTapSimulador))
         cardViewSimulador.addGestureRecognizer(tapSimulador)

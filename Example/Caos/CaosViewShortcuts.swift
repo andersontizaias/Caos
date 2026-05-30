@@ -230,4 +230,7 @@ public class CaosViewShortcuts: UIView, CaosView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    public func configure(with props: CaosProps) {
+        if let title = props.string("title") { shardLabel.text = title }
+    }
 }

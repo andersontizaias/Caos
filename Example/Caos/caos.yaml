@@ -1,7 +1,45 @@
-container_type: list_vertical
-    shard: Caos_Example.CaosViewShortcutsChain
-    shard: Caos_Example.CaosViewCard
-    shard: Caos_Example.CaosViewShortcuts
-    shard: Caos_Example.CaosViewCard
-    shard: Caos_Example.CaosViewShortcuts
-    shard: Caos_Example.CaosViewShortcutsChain
+version: 1
+screens:
+  - id: home
+    container:
+      type: vertical
+      spacing: 0
+      padding:
+        top: 0
+        bottom: 0
+        leading: 0
+        trailing: 0
+    shards:
+      - type: Caos_Example.CaosViewShortcutsChain
+        id: shortcuts_chain
+        props:
+          title: "Minha Rede"
+      - type: Caos_Example.CaosViewCard
+        id: card_1
+        props:
+          title: "Antecipação de recebíveis"
+          valueLabel: "Total disponível:"
+          backgroundColor: "#FFFFFF"
+          cornerRadius: 15
+          iconName: "dollarsign.circle"
+          iconColor: "#FF8C00"
+      - type: Caos_Example.CaosViewShortcuts
+        id: shortcuts_1
+        props:
+          title: "O que você quer fazer?"
+      - type: Caos_Example.CaosViewCard
+        id: card_2
+        props:
+          title: "Antecipação de recebíveis"
+          valueLabel: "Total disponível:"
+          backgroundColor: "#FFFFFF"
+          cornerRadius: 15
+          iconName: "dollarsign.circle"
+          iconColor: "#FF8C00"
+      - type: Caos_Example.CaosViewShortcuts
+        id: shortcuts_2
+        props:
+          title: "O que você quer fazer?"
+      - type: Caos_Example.CaosViewShortcutsChainShimmer
+        id: shimmer_1
+        props: {}
