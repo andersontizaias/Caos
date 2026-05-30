@@ -1,48 +1,82 @@
-#if canImport(UIKit)
 import SwiftUI
 
-/// SwiftUI-native wrapper for a Caos screen defined in a YAML file.
-/// Follows the MV pattern: no ViewModel, store injected via @Environment.
+/// View SwiftUI que carrega e renderiza uma tela Caos a partir de um arquivo YAML.
 ///
-/// Simple usage:
+/// Uso:
 /// ```swift
-/// CaosScreenView(name: "home", bundle: .main)
+/// CaosScreenView(name: "home")
+///     .caosStore(store)
+///     .onCaosTap { id, context in
+///         navigator.push(id)
+///     }
 /// ```
-///
-/// With injected store:
-/// ```swift
-/// CaosScreenView(name: "home", bundle: .main)
-///     .caosStore(myStore)
-/// ```
-@available(iOS 16.0, *)
-public struct CaosScreenView: UIViewRepresentable {
+@available(iOS 16.0, macOS 13.0, *)
+public struct CaosScreenView: View {
 
-    public let name: String
-    public let bundle: Bundle
+    private let name: String
+    private let bundle: Bundle
 
     @Environment(\.caosStore) private var store
+    @State private var schema: CaosSchema?
+    @State private var parseError: CaosError?
 
     public init(name: String, bundle: Bundle = .main) {
         self.name = name
         self.bundle = bundle
     }
 
-    public func makeCoordinator() -> CaosCoordinator {
-        CaosCoordinator(store: store)
-    }
-
-    public func makeUIView(context: Context) -> UIScrollView {
-        guard let engine = Caos.configure(
-            bundle: bundle,
-            name: name,
-            target: context.coordinator,
-            store: store
-        ) else {
-            return UIScrollView()
+    public var body: some View {
+        Group {
+            if let schema {
+                if let screen = schema.screens.first {
+                    CaosContainerView(screen: screen)
+                } else {
+                    emptyState("Nenhuma tela encontrada no YAML '\(name)'")
+                }
+            } else if let parseError {
+                errorState(parseError)
+            } else {
+                ProgressView()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
         }
-        return engine.getScreenByIndex(index: 0) as? UIScrollView ?? UIScrollView()
+        .task { await loadSchema() }
     }
 
-    public func updateUIView(_ uiView: UIScrollView, context: Context) {}
+    // MARK: - Private helpers
+
+    @MainActor
+    private func loadSchema() async {
+        guard let path = bundle.path(forResource: name, ofType: "yaml") else {
+            parseError = .invalidYAML(line: 0, reason: "'\(name).yaml' não encontrado no bundle")
+            return
+        }
+        do {
+            let content = try String(contentsOfFile: path, encoding: .utf8)
+            schema = try CaosParser.parse(content)
+        } catch let caosErr as CaosError {
+            parseError = caosErr
+        } catch {
+            parseError = .invalidYAML(line: 0, reason: error.localizedDescription)
+        }
+    }
+
+    private func emptyState(_ message: String) -> some View {
+        Text(message)
+            .font(.caption)
+            .foregroundStyle(.secondary)
+            .padding()
+    }
+
+    private func errorState(_ error: CaosError) -> some View {
+        VStack(spacing: 8) {
+            Image(systemName: "exclamationmark.triangle")
+                .font(.largeTitle)
+                .foregroundStyle(.orange)
+            Text(error.localizedDescription)
+                .font(.caption)
+                .multilineTextAlignment(.center)
+        }
+        .padding()
+    }
 }
-#endif
