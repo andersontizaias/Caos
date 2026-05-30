@@ -30,6 +30,7 @@ Podfile.lock
 *.tmp
 *.swp
 *.lock
+!Gemfile.lock
 
 # macOS
 .DS_Store

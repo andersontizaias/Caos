@@ -81,3 +81,41 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: coverage.json
 
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage.json
+
+  danger:
+    runs-on: macos-15
+    needs: coverage
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download Coverage Report
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-report
+        continue-on-error: true
+
+      - name: Cache SwiftLint
+        id: cache-swiftlint
+        uses: actions/cache@v4
+        with:
+          path: /usr/local/bin/swiftlint
+          key: swiftlint-${{ runner.os }}-0.57.0
+
+      - name: Install SwiftLint
+        if: steps.cache-swiftlint.outputs.cache-hit != 'true'
+        run: brew install swiftlint
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+
+      - name: Danger
+        run: bundle exec danger
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
