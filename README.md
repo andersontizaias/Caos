@@ -404,15 +404,6 @@ Or via Xcode: **File → Add Package Dependencies** and enter the repository URL
 
 ---
 
-## Migration from v0
-
-If you're upgrading from v0, see the migration guides:
-
-- [YAML v0 → v1](Docs/Migration_v0_to_v1.md)
-- [Delegate → CaosStore](Docs/Migration_Delegate_to_Store.md)
-
----
-
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines, commit conventions, and setup instructions.
