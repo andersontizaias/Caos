@@ -1,23 +1,23 @@
-#if canImport(UIKit)
 import SwiftUI
 
-/// Protocol for shards built entirely in SwiftUI.
-/// Conformers receive props at init and access the store via @Environment — no ViewModel needed.
+/// Protocolo que todo shard SwiftUI deve conformar.
+/// O shard recebe props do YAML via init e acessa dados/eventos via @Environment.
 ///
-/// Example:
+/// Exemplo:
 /// ```swift
-/// struct BalanceCardView: View, CaosSwiftUIView {
+/// struct CardView: CaosSwiftUIView {
 ///     let props: CaosProps
-///     @Environment(\.caosStore) private var store
+///     @Environment(\.caosStore) var store
+///     @Environment(\.caosTapAction) var onTap
 ///
 ///     var body: some View {
-///         Text(store.resolve(key: props.string("dataKey") ?? "") ?? "--")
-///             .foregroundStyle(props.swiftUIColor("textColor") ?? .primary)
+///         Button { onTap(props.string("id") ?? "", [:]) } label: {
+///             Text(props.string("title") ?? "")
+///         }
 ///     }
 /// }
 /// ```
-@available(iOS 16.0, *)
+@available(iOS 16.0, macOS 13.0, *)
 public protocol CaosSwiftUIView: View {
     init(props: CaosProps)
 }
-#endif

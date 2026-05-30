@@ -4,6 +4,7 @@ import SwiftUI
 
 /// Central Model for the Caos MV architecture.
 /// Manages data providers, reactive publishers, and shard type registration.
+@available(iOS 16.0, macOS 13.0, *)
 public final class CaosStore: ObservableObject {
 
     // MARK: - Private state

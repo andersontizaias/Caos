@@ -3,7 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "Caos",
-    platforms: [.iOS(.v16)],
+    platforms: [.iOS(.v16), .macOS(.v13)],
     products: [
         .library(name: "Caos", targets: ["Caos"]),
         .executable(name: "caos-lint", targets: ["CaosLint"]),
