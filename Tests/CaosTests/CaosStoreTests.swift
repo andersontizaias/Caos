@@ -57,6 +57,13 @@ final class CaosStoreTests: XCTestCase {
         XCTAssertNil(publisher)
     }
 
+    func testResolveViaSubjectValue() {
+        let subject = CurrentValueSubject<Int, Never>(42)
+        store.register(key: "score", publisher: subject.eraseToAnyPublisher())
+        let value: Int? = store.resolve(key: "score")
+        XCTAssertEqual(value, 42)
+    }
+
     // MARK: - Shard registry
 
     func testRegisterFactoryAndViewReturnsAnyView() {

@@ -29,16 +29,16 @@ public struct ShimmerModifier: ViewModifier {
             .animation(.easeInOut(duration: 0.3), value: isActive)
             .onAppear {
                 guard isActive else { return }
-                startAnimation()
+                _startAnimation()
             }
             .onChange(of: isActive) { active in
-                if active { startAnimation() } else { phase = 0 }
+                if active { _startAnimation() } else { phase = 0 }
             }
     }
 
     // MARK: - Private
 
-    private var shimmerOverlay: some View {
+    var shimmerOverlay: some View {
         GeometryReader { geo in
             let width = geo.size.width
             LinearGradient(
@@ -57,7 +57,7 @@ public struct ShimmerModifier: ViewModifier {
         .allowsHitTesting(false)
     }
 
-    private func startAnimation() {
+    func _startAnimation() {
         phase = 0
         withAnimation(.linear(duration: 1.4).repeatForever(autoreverses: false)) {
             phase = 1

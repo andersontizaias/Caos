@@ -59,6 +59,26 @@ final class CaosSwiftUITests: XCTestCase {
         let view = store.view(for: "stub", props: CaosProps(["title": "Test"]))
         XCTAssertNotNil(view)
     }
+
+    // MARK: - CaosEnvironment EnvironmentValues
+
+    func testCaosStoreEnvironmentValues_getterSetter() {
+        var values = EnvironmentValues()
+        let store = CaosStore()
+        store.register(type: "env_test", view: StubView.self)
+        values.caosStore = store
+        XCTAssertNotNil(values.caosStore)
+    }
+
+    // MARK: - CaosTapHandler EnvironmentValues
+
+    func testCaosTapActionEnvironmentValues_getterSetter() {
+        var values = EnvironmentValues()
+        var received = ""
+        values.caosTapAction = { id, _ in received = id }
+        values.caosTapAction("shard_1", [:])
+        XCTAssertEqual(received, "shard_1")
+    }
 }
 
 // MARK: - Stub

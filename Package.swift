@@ -25,7 +25,7 @@ let package = Package(
             name: "CaosTests",
             dependencies: ["Caos"],
             path: "Tests/CaosTests",
-            resources: [.copy("Fixtures")]
+            resources: [.copy("Fixtures"), .process("caos_empty_screens.yaml"), .process("caos_invalid_version.yaml")]
         ),
     ]
 )

@@ -24,6 +24,14 @@ public struct CaosScreenView: View {
         self.bundle = bundle
     }
 
+    /// Internal init for testing — allows pre-loading schema or error state so body branches can be covered.
+    init(name: String, bundle: Bundle = .main, preloadedSchema: CaosSchema?, preloadedError: CaosError?) {
+        self.name = name
+        self.bundle = bundle
+        self._schema = State(initialValue: preloadedSchema)
+        self._parseError = State(initialValue: preloadedError)
+    }
+
     public var body: some View {
         Group {
             if let schema {
@@ -45,7 +53,7 @@ public struct CaosScreenView: View {
     // MARK: - Private helpers
 
     @MainActor
-    private func loadSchema() async {
+    func loadSchema() async {
         guard let path = bundle.path(forResource: name, ofType: "yaml") else {
             parseError = .invalidYAML(line: 0, reason: "'\(name).yaml' não encontrado no bundle")
             return
