@@ -2,94 +2,70 @@ import XCTest
 import SwiftUI
 @testable import Caos
 
-@available(iOS 16.0, *)
+@available(iOS 16.0, macOS 13.0, *)
 final class CaosSwiftUITests: XCTestCase {
+
+    // MARK: - CaosSwiftUIView protocol
+
+    func testStubConformsToProtocol() {
+        let view = StubView(props: CaosProps(["key": "value"]))
+        XCTAssertNotNil(view)
+    }
+
+    func testPropsAccessibleInShard() {
+        let props = CaosProps(["title": "Hello"])
+        let view = StubView(props: props)
+        XCTAssertEqual(view.props.string("title"), "Hello")
+    }
 
     // MARK: - CaosEnvironment
 
-    func test_caosStoreEnvironmentKey_hasDefaultValue() {
+    func testCaosStoreEnvironmentKeyDefaultValue() {
         let store = CaosStore()
         XCTAssertNotNil(store)
     }
 
-    func test_caosStore_environmentModifier_compilesAndInjects() {
-        let store = CaosStore()
-        store.register(key: "test") { "value" }
+    // MARK: - CaosTapHandler
 
-        // Verify the store modifier syntax compiles and the value is injectable
-        let view = Text("Hello").caosStore(store)
+    func testOnCaosTapModifierExists() {
+        var tappedId = ""
+        let view = Text("tap me").onCaosTap { id, _ in tappedId = id }
+        XCTAssertNotNil(view)
+        _ = tappedId
+    }
+
+    func testCaosTapActionDefaultDoesNothing() {
+        let defaultAction: CaosTapAction = { _, _ in }
+        defaultAction("anyId", [:])
+    }
+
+    // MARK: - CaosUnknownShardView
+
+    func testUnknownShardViewCreation() {
+        let view = CaosUnknownShardView(type: "unknown")
         XCTAssertNotNil(view)
     }
 
-    // MARK: - CaosCoordinator
+    // MARK: - CaosStore registry integration
 
-    func test_coordinator_didTapShard_callsOnTap() {
+    func testStoreViewForUnregisteredTypeReturnsView() {
         let store = CaosStore()
-        let coordinator = CaosCoordinator(store: store)
-
-        var receivedId: String?
-        var receivedContext: [String: Any]?
-
-        coordinator.onTap = { id, context in
-            receivedId = id
-            receivedContext = context
-        }
-
-        coordinator.didTapShard(id: "card_balance", context: ["action": "navigate"])
-
-        XCTAssertEqual(receivedId, "card_balance")
-        XCTAssertEqual(receivedContext?["action"] as? String, "navigate")
+        let view = store.view(for: "unregistered", props: CaosProps())
+        XCTAssertNotNil(view)
     }
 
-    func test_coordinator_onTap_nil_doesNotCrash() {
+    func testStoreViewForRegisteredTypeReturnsView() {
         let store = CaosStore()
-        let coordinator = CaosCoordinator(store: store)
-        coordinator.onTap = nil
-        XCTAssertNoThrow(coordinator.didTapShard(id: "any", context: [:]))
-    }
-
-    func test_coordinator_rootView_isUIView() {
-        let coordinator = CaosCoordinator(store: CaosStore())
-        XCTAssertTrue(coordinator.rootView is UIView)
-    }
-
-    // MARK: - CaosScreenView structure
-
-    func test_caosScreenView_init_setsProperties() {
-        let view = CaosScreenView(name: "home", bundle: .main)
-        XCTAssertEqual(view.name, "home")
-        XCTAssertEqual(view.bundle, .main)
-    }
-
-    func test_caosScreenView_defaultBundle_isMain() {
-        let view = CaosScreenView(name: "test")
-        XCTAssertEqual(view.bundle, .main)
-    }
-
-    // MARK: - CaosStore + Environment integration
-
-    func test_store_registeredBeforeView_resolvesInCoordinator() {
-        let store = CaosStore()
-        store.register(key: "greeting") { "Olá, Caos!" }
-
-        let coordinator = CaosCoordinator(store: store)
-        XCTAssertNotNil(coordinator)
-        // Coordinator holds a reference to the store — values are accessible
-        let value: String? = store.resolve(key: "greeting")
-        XCTAssertEqual(value, "Olá, Caos!")
-    }
-
-    func test_store_shardRegistry_availableToCoordinator() {
-        let store = CaosStore()
-        store.register(type: "CardView", view: MockSwiftUIShardView.self)
-        let resolved = store.viewType(for: "CardView")
-        XCTAssertTrue(resolved == MockSwiftUIShardView.self)
+        store.register(type: "stub", view: StubView.self)
+        let view = store.view(for: "stub", props: CaosProps(["title": "Test"]))
+        XCTAssertNotNil(view)
     }
 }
 
-// MARK: - Mock shard view for tests
+// MARK: - Stub
 
-private final class MockSwiftUIShardView: UIView, CaosView {
-    weak var delegate: CaosEngineDelegate?
-    func configure(with props: CaosProps) {}
+@available(iOS 16.0, macOS 13.0, *)
+private struct StubView: CaosSwiftUIView {
+    let props: CaosProps
+    var body: some View { EmptyView() }
 }
