@@ -1,0 +1,30 @@
+name: Nightly
+
+on:
+  schedule:
+    - cron: '0 2 * * *'
+
+jobs:
+  full-matrix:
+    runs-on: macos-15
+    strategy:
+      matrix:
+        ios: ["16.0", "17.0", "18.0"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test on iOS ${{ matrix.ios }}
+        run: |
+          xcodebuild test \
+            -scheme Caos \
+            -destination "platform=iOS Simulator,name=iPhone 16,OS=${{ matrix.ios }}" \
+            CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO \
+            | xcpretty
+
+  spm-validation:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build via SPM
+        run: swift build
+      - name: Test via SPM (macOS — sem UIKit, sem flags de SDK)
+        run: swift test --enable-code-coverage

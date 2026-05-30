@@ -1,3 +1,6 @@
+# SPM build artifacts
+.build/
+
 # Xcode
 DerivedData/
 .idea/
@@ -27,6 +30,7 @@ Podfile.lock
 *.tmp
 *.swp
 *.lock
+!Gemfile.lock
 
 # macOS
 .DS_Store

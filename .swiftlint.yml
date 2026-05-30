@@ -1,0 +1,27 @@
+disabled_rules:
+  - trailing_whitespace
+  - line_length
+  - file_length
+  - function_body_length
+  - type_body_length
+  - cyclomatic_complexity
+  - force_cast
+  - trailing_comma
+
+opt_in_rules:
+  - empty_count
+  - closure_end_indentation
+
+identifier_name:
+  excluded:
+    - id
+
+included:
+  - Sources
+  - Tests
+
+excluded:
+  - .build
+  - Pods
+  - Example
+  - Sources/CaosLint
