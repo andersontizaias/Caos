@@ -5,11 +5,10 @@
 //  Created by Anderson Tiago Izaias on 29/05/26.
 //
 
-import UIKit
-import SwiftUI
+import Foundation
 
 public struct CaosProps {
-    private let data: [String: Any]
+    let data: [String: Any]
 
     public init(_ data: [String: Any] = [:]) { self.data = data }
 
@@ -26,15 +25,6 @@ public struct CaosProps {
         if let s = data[key] as? String { return s == "true" }
         return nil
     }
-    public func color(_ key: String) -> UIColor? {
-        guard let hex = data[key] as? String else { return nil }
-        return UIColor(caosHex: hex)
-    }
-    @available(iOS 14.0, *)
-    public func swiftUIColor(_ key: String) -> Color? {
-        guard let c = color(key) else { return nil }
-        return Color(uiColor: c)
-    }
     public func nested(_ key: String) -> CaosProps? {
         guard let dict = data[key] as? [String: Any] else { return nil }
         return CaosProps(dict)
@@ -42,6 +32,23 @@ public struct CaosProps {
     public func array(_ key: String) -> [CaosProps]? {
         guard let arr = data[key] as? [[String: Any]] else { return nil }
         return arr.map { CaosProps($0) }
+    }
+}
+
+#if canImport(UIKit)
+import UIKit
+import SwiftUI
+
+public extension CaosProps {
+    func color(_ key: String) -> UIColor? {
+        guard let hex = data[key] as? String else { return nil }
+        return UIColor(caosHex: hex)
+    }
+
+    @available(iOS 14.0, *)
+    func swiftUIColor(_ key: String) -> Color? {
+        guard let c = color(key) else { return nil }
+        return Color(uiColor: c)
     }
 }
 
@@ -69,3 +76,4 @@ extension UIColor {
         }
     }
 }
+#endif

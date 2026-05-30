@@ -5,6 +5,7 @@
 //  Created by Anderson Tiago Izaias on 08/10/23.
 //
 
+#if canImport(UIKit)
 import Foundation
 
 public class Caos {
@@ -29,3 +30,4 @@ public class Caos {
         }
     }
 }
+#endif

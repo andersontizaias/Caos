@@ -5,7 +5,8 @@
 //  Created by Anderson Tiago Izaias on 11/10/23.
 //
 
-import Foundation
+#if canImport(UIKit)
+import UIKit
 
 public protocol CaosEngineDelegate: AnyObject {
     var rootView: UIView { get }
@@ -25,3 +26,4 @@ public extension CaosEngineDelegate {
     func didTapCardView(context: String) {}
     func requestDataForLabel() -> String { return "" }
 }
+#endif

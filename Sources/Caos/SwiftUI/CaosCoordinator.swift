@@ -1,3 +1,4 @@
+#if canImport(UIKit)
 import UIKit
 
 /// Bridge between UIKit CaosEngine events and the SwiftUI environment.
@@ -18,3 +19,4 @@ public final class CaosCoordinator: NSObject, CaosEngineDelegate {
         onTap?(id, context)
     }
 }
+#endif

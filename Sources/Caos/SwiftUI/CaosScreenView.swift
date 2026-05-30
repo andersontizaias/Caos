@@ -1,3 +1,4 @@
+#if canImport(UIKit)
 import SwiftUI
 
 /// SwiftUI-native wrapper for a Caos screen defined in a YAML file.
@@ -44,3 +45,4 @@ public struct CaosScreenView: UIViewRepresentable {
 
     public func updateUIView(_ uiView: UIScrollView, context: Context) {}
 }
+#endif

@@ -5,8 +5,8 @@
 //  Created by Anderson Tiago Izaias on 08/10/23.
 //
 
-import Foundation
-
+#if canImport(UIKit)
+import UIKit
 
 public class CaosEngine {
     
@@ -132,5 +132,6 @@ public class CaosEngine {
             }
         }
     }
-    
+
 }
+#endif

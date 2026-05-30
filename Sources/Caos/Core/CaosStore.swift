@@ -1,3 +1,4 @@
+#if canImport(UIKit)
 import Foundation
 import Combine
 
@@ -66,3 +67,4 @@ public final class CaosStore {
         return shardRegistry[type]
     }
 }
+#endif

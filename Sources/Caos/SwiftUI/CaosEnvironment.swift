@@ -1,3 +1,4 @@
+#if canImport(UIKit)
 import SwiftUI
 
 // MARK: - Environment Key
@@ -21,3 +22,4 @@ public extension View {
         environment(\.caosStore, store)
     }
 }
+#endif

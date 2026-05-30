@@ -1,3 +1,4 @@
+#if canImport(UIKit)
 import SwiftUI
 
 /// Protocol for shards built entirely in SwiftUI.
@@ -19,3 +20,4 @@ import SwiftUI
 public protocol CaosSwiftUIView: View {
     init(props: CaosProps)
 }
+#endif

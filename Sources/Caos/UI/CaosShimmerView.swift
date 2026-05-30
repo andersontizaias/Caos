@@ -1,3 +1,4 @@
+#if canImport(UIKit)
 import UIKit
 
 public final class CaosShimmerView: UIView {
@@ -48,3 +49,4 @@ public final class CaosShimmerView: UIView {
         isHidden = true
     }
 }
+#endif

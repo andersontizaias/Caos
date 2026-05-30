@@ -1,3 +1,4 @@
+#if canImport(UIKit)
 import UIKit
 import Combine
 
@@ -31,3 +32,4 @@ public final class CaosDataBinding {
         cancellables.removeAll()
     }
 }
+#endif

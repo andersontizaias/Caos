@@ -5,7 +5,7 @@
 //  Created by Anderson Tiago Izaias on 08/10/23.
 //
 
-import UIKit
+import Foundation
 
 /// Parses YAML v1 schema files for Caos.
 /// Uses only Swift stdlib — no third-party dependencies.
@@ -63,7 +63,7 @@ public class CaosParser {
             screen.containerConfig = CaosContainer(
                 type: type,
                 spacing: spacing,
-                padding: UIEdgeInsets(top: top, left: leading, bottom: bottom, right: trailing)
+                padding: CaosEdgeInsets(top: top, left: leading, bottom: bottom, right: trailing)
             )
         }
 
