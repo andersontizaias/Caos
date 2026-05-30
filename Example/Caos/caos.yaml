@@ -10,36 +10,33 @@ screens:
         leading: 0
         trailing: 0
     shards:
-      - type: Caos_Example.CaosViewShortcutsChain
+      - type: CaosExample.CaosViewShortcutsChain
         id: shortcuts_chain
         props:
-          title: "Minha Rede"
-      - type: Caos_Example.CaosViewCard
+          title: "My Network"
+      - type: CaosExample.CaosViewCard
         id: card_1
         props:
-          title: "Antecipação de recebíveis"
-          valueLabel: "Total disponível:"
+          title: "Receivables Advance"
+          valueLabel: "Total available:"
           backgroundColor: "#FFFFFF"
           cornerRadius: 15
           iconName: "dollarsign.circle"
-          iconColor: "#FF8C00"
-      - type: Caos_Example.CaosViewShortcuts
+          iconColor: "#1A3366"
+      - type: CaosExample.CaosViewShortcuts
         id: shortcuts_1
         props:
-          title: "O que você quer fazer?"
-      - type: Caos_Example.CaosViewCard
+          title: "What would you like to do?"
+      - type: CaosExample.CaosViewCard
         id: card_2
         props:
-          title: "Antecipação de recebíveis"
-          valueLabel: "Total disponível:"
+          title: "Receivables Advance"
+          valueLabel: "Total available:"
           backgroundColor: "#FFFFFF"
           cornerRadius: 15
           iconName: "dollarsign.circle"
-          iconColor: "#FF8C00"
-      - type: Caos_Example.CaosViewShortcuts
+          iconColor: "#1A3366"
+      - type: CaosExample.CaosViewShortcuts
         id: shortcuts_2
         props:
-          title: "O que você quer fazer?"
-      - type: Caos_Example.CaosViewShortcutsChainShimmer
-        id: shimmer_1
-        props: {}
+          title: "What would you like to do?"
