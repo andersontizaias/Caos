@@ -27,21 +27,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Cache SwiftFormat
-        id: cache-swiftformat
-        uses: actions/cache@v4
-        with:
-          path: /usr/local/bin/swiftformat
-          key: swiftformat-${{ runner.os }}-0.61.1
-
-      - name: Install SwiftFormat
-        if: steps.cache-swiftformat.outputs.cache-hit != 'true'
+      - name: Install SwiftFormat 0.61.1
         run: |
           curl -L https://github.com/nicklockwood/SwiftFormat/releases/download/0.61.1/swiftformat.zip \
             -o /tmp/swiftformat.zip
           unzip -q /tmp/swiftformat.zip -d /tmp/swiftformat
-          sudo mv /tmp/swiftformat/swiftformat /usr/local/bin/swiftformat
-          sudo chmod +x /usr/local/bin/swiftformat
+          sudo mv -f /tmp/swiftformat/swiftformat /opt/homebrew/bin/swiftformat
+          sudo chmod +x /opt/homebrew/bin/swiftformat
+          swiftformat --version
 
       - name: SwiftFormat (check only)
         run: swiftformat Sources Tests --lint
