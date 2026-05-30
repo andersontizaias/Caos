@@ -1,122 +1,62 @@
-//
-//  CaosViewCard.swift
-//  Caos_Example
-//
-//  Created by Anderson Tiago Izaias on 17/10/23.
-//  Copyright © 2023 Anderson Tiago Izaias. All rights reserved.
-//
-
-import UIKit
+import SwiftUI
 import Caos
 
-@available(iOS 13.0, *)
-public class CaosViewCard: UIView, CaosView {
-    
-    public var delegate: CaosEngineDelegate?
-    
-    
-    let shardView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .white
-        view.layer.cornerRadius = 15
-        view.layer.shadowColor = UIColor.black.cgColor
-        view.layer.shadowOffset = CGSize(width: 4, height: 4)
-        view.layer.shadowOpacity = 0.25
-        view.layer.shadowRadius = 4
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.heightAnchor.constraint(equalToConstant: 120).isActive = true
-        return view
-    }()
-    
-    let shardLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Antecipação de recebiveis"
-        label.font = UIFont.systemFont(ofSize: 14, weight: .bold)
-        label.textColor = .darkGray
-        label.textAlignment = .center
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    let totalLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Total disponível:"
-        label.font = UIFont.systemFont(ofSize: 17, weight: .bold)
-        label.textColor = .darkGray
-        label.textAlignment = .center
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    let totalValue: UILabel = {
-        let label = UILabel()
-        label.text = "R$10.000,00"
-        label.font = UIFont.systemFont(ofSize: 17, weight: .bold)
-        label.textColor = .darkGray
-        label.textAlignment = .center
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    let imageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(systemName: "dollarsign.circle"))
-        imageView.tintColor = .orange
-        imageView.sizeToFit()
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
-    }()
-    
-    public override init(frame: CGRect) {
-        super.init(frame: frame)
-        
-        backgroundColor = .systemFill //MyCustomView.randomizeUIColor()
-        shardView.addSubview(shardLabel)
-        shardView.addSubview(totalLabel)
-        shardView.addSubview(totalValue)
-        shardView.addSubview(imageView)
-        addSubview(shardView)
-        
-        setupGesture()
-        
-        NSLayoutConstraint.activate([
-            self.heightAnchor.constraint(equalToConstant: 130),
-            shardView.leadingAnchor.constraint(equalTo: self.leadingAnchor,constant: 10),
-            shardView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -10),
-            shardView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-            shardLabel.leadingAnchor.constraint(equalTo: shardView.leadingAnchor, constant: 10),
-            shardLabel.topAnchor.constraint(equalTo: shardView.topAnchor, constant: 5),
-            totalLabel.centerYAnchor.constraint(equalTo: shardView.centerYAnchor),
-            totalLabel.leadingAnchor.constraint(equalTo: shardView.leadingAnchor, constant: 85),
-            totalValue.centerYAnchor.constraint(equalTo: shardView.centerYAnchor),
-            totalValue.leadingAnchor.constraint(equalTo: totalLabel.trailingAnchor, constant: 5),
-            imageView.leadingAnchor.constraint(equalTo: shardView.leadingAnchor, constant: 20),
-            imageView.centerYAnchor.constraint(equalTo: shardView.centerYAnchor),
-            imageView.heightAnchor.constraint(equalToConstant: 60),
-            imageView.widthAnchor.constraint(equalToConstant: 60),
-        ])
-        
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+@available(iOS 16.0, *)
+struct CaosViewCard: CaosSwiftUIView {
+    let props: CaosProps
+    @Environment(\.caosStore) private var store
+    @Environment(\.caosTapAction) private var onTap
+
+    var body: some View {
+        let balance: String = store.resolve(key: "balance") ?? "—"
+
+        RoundedRectangle(cornerRadius: max(CGFloat(props.double("cornerRadius")), 15))
+            .fill(cardBackground)
+            .shadow(color: .black.opacity(0.25), radius: 4, x: 4, y: 4)
+            .frame(height: 120)
+            .overlay(
+                HStack(spacing: 16) {
+                    Image(systemName: props.string("iconName") ?? "dollarsign.circle")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 50, height: 50)
+                        .foregroundColor(iconColor)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(props.string("title") ?? "")
+                            .font(.system(size: 14, weight: .bold))
+                            .foregroundColor(.primary)
+                        Text(props.string("valueLabel") ?? "")
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundColor(.secondary)
+                        Text(balance)
+                            .font(.system(size: 17, weight: .bold))
+                            .foregroundColor(.primary)
+                    }
+                    Spacer()
+                }
+                .padding(.horizontal, 20)
+            )
+            .padding(.horizontal, 10)
+            .padding(.vertical, 8)
+            .onTapGesture { onTap("card_tap", [:]) }
     }
 
-    private func setupGesture() {
-        let tap = UITapGestureRecognizer(target: self, action: #selector(handlerTap))
-        shardView.addGestureRecognizer(tap)
-    }
-    
-    public func configure(with props: CaosProps) {
-        if let title = props.string("title") { shardLabel.text = title }
-        if let valueLabel = props.string("valueLabel") { totalLabel.text = valueLabel }
-        if let bg = props.color("backgroundColor") { shardView.backgroundColor = bg }
-        if let radius = props.double("cornerRadius") { shardView.layer.cornerRadius = CGFloat(radius) }
-        if let iconName = props.string("iconName") { imageView.image = UIImage(systemName: iconName) }
-        if let iconColor = props.color("iconColor") { imageView.tintColor = iconColor }
+    private var cardBackground: Color {
+        colorFromHex(props.hexColor("backgroundColor")) ?? .white
     }
 
-    @objc func handlerTap(){
-        delegate?.didTapCardView(context: "Click Here")
-        totalValue.text = delegate?.requestDataForLabel()
+    private var iconColor: Color {
+        colorFromHex(props.hexColor("iconColor")) ?? Color(red: 0.102, green: 0.200, blue: 0.400)
     }
+}
+
+private func colorFromHex(_ hex: String?) -> Color? {
+    guard let hex else { return nil }
+    let cleaned = hex.hasPrefix("#") ? String(hex.dropFirst()) : hex
+    guard cleaned.count == 6, let value = UInt64(cleaned, radix: 16) else { return nil }
+    return Color(
+        red: Double((value >> 16) & 0xFF) / 255,
+        green: Double((value >> 8) & 0xFF) / 255,
+        blue: Double(value & 0xFF) / 255
+    )
 }

@@ -1,70 +1,44 @@
-//
-//  ViewController.swift
-//  Caos
-//
-//  Created by andersontizaias on 10/07/2023.
-//  Copyright (c) 2023 andersontizaias. All rights reserved.
-//
-
 import UIKit
+import SwiftUI
 import Caos
 
-class ViewController: UIViewController, CaosEngineDelegate  {
-    
-    //MARK: - Properties
-    
-    var rootView: UIView {
-        return self.view
-    }
-    
-    //MARK: - Life cycle
-    
+class ViewController: UIViewController {
+
+    private let store = CaosStore()
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupRootView(caosScreen: getScreen(engine: setupCaos()))
-        self.view.layoutIfNeeded()
+        setupStore()
+        embedCaosScreen()
     }
-        
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-    // MARK: - Private methods
-    
-    private func setupCaos()-> CaosEngine? {
-        return Caos.configure(bundle: Bundle.main, name: "caos", target: self)
-    }
-    
-    private func getScreen(engine: CaosEngine?) -> UIView {
-         return engine?.getScreenByIndex(index: 0) ?? UIView()
-    }
-    
-    private func setupRootView(caosScreen: UIView){
-        self.view.addSubview(caosScreen)
-        
-        NSLayoutConstraint.activate([
-            caosScreen.topAnchor.constraint(equalTo: rootView.safeAreaLayoutGuide.topAnchor),
-            caosScreen.bottomAnchor.constraint(equalTo: rootView.safeAreaLayoutGuide.bottomAnchor),
-            caosScreen.leadingAnchor.constraint(equalTo: rootView.safeAreaLayoutGuide.leadingAnchor),
-            caosScreen.trailingAnchor.constraint(equalTo: rootView.safeAreaLayoutGuide.trailingAnchor)
-        ])
-        
-    }
-    
-    private func getIntRandom() -> Int {
-        return Int.random(in: 0..<6)
-    }
-    
-    // MARK: - CaosEngineDelegate
-    
-    func didTapCardView(context: String) {
-        print("Tocando na view do card \(context)")
-    }
-    
-    func requestDataForLabel() -> String {
-        return "R$30.000,00"
-    }
-    
-}
 
+    private func setupStore() {
+        store.register(type: "CaosExample.CaosViewCard", view: CaosViewCard.self)
+        store.register(type: "CaosExample.CaosViewShortcuts", view: CaosViewShortcuts.self)
+        store.register(type: "CaosExample.CaosViewShortcutsChain", view: CaosViewShortcutsChain.self)
+        store.register(type: "CaosExample.CaosViewShortcutsChainShimmer", view: CaosViewShortcutsChainShimmer.self)
+        store.register(key: "balance") { "R$30.000,00" }
+    }
+
+    private func embedCaosScreen() {
+        let caosView = CaosScreenView(name: "caos")
+            .caosStore(store)
+            .onCaosTap { id, _ in
+                print("Tap em shard: \(id)")
+            }
+            .background(Color(.systemBackground))
+
+        let hosting = UIHostingController(rootView: caosView)
+        addChild(hosting)
+        hosting.view.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(hosting.view)
+        hosting.didMove(toParent: self)
+
+        NSLayoutConstraint.activate([
+            hosting.view.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            hosting.view.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            hosting.view.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            hosting.view.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+        ])
+    }
+}
