@@ -1,4 +1,3 @@
-#if canImport(UIKit)
 import SwiftUI
 
 // MARK: - Environment Key
@@ -17,9 +16,7 @@ public extension EnvironmentValues {
 // MARK: - View modifier
 
 public extension View {
-    /// Injects a CaosStore into the SwiftUI environment for all descendant views and shards.
     func caosStore(_ store: CaosStore) -> some View {
         environment(\.caosStore, store)
     }
 }
-#endif

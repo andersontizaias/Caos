@@ -1,0 +1,54 @@
+{
+  "": {
+    "swift-dependencies": "/Users/little/Documents/Projects/repositories/Caos/.build/arm64-apple-macosx/debug/CaosTests.build/master.swiftdeps"
+  },
+  "/Users/little/Documents/Projects/repositories/Caos/Tests/CaosTests/CaosDataBindingTests.swift": {
+    "dependencies": "/Users/little/Documents/Projects/repositories/Caos/.build/arm64-apple-macosx/debug/CaosTests.build/CaosDataBindingTests.d",
+    "object": "/Users/little/Documents/Projects/repositories/Caos/.build/arm64-apple-macosx/debug/CaosTests.build/CaosDataBindingTests.swift.o",
+    "swiftmodule": "/Users/little/Documents/Projects/repositories/Caos/.build/arm64-apple-macosx/debug/CaosTests.build/CaosDataBindingTests~partial.swiftmodule",
+    "swift-dependencies": "/Users/little/Documents/Projects/repositories/Caos/.build/arm64-apple-macosx/debug/CaosTests.build/CaosDataBindingTests.swiftdeps",
+    "diagnostics": "/Users/little/Documents/Projects/repositories/Caos/.build/arm64-apple-macosx/debug/CaosTests.build/CaosDataBindingTests.dia"
+  },
+  "/Users/little/Documents/Projects/repositories/Caos/Tests/CaosTests/CaosEngineTests.swift": {
+    "dependencies": "/Users/little/Documents/Projects/repositories/Caos/.build/arm64-apple-macosx/debug/CaosTests.build/CaosEngineTests.d",
+    "object": "/Users/little/Documents/Projects/repositories/Caos/.build/arm64-apple-macosx/debug/CaosTests.build/CaosEngineTests.swift.o",
+    "swiftmodule": "/Users/little/Documents/Projects/repositories/Caos/.build/arm64-apple-macosx/debug/CaosTests.build/CaosEngineTests~partial.swiftmodule",
+    "swift-dependencies": "/Users/little/Documents/Projects/repositories/Caos/.build/arm64-apple-macosx/debug/CaosTests.build/CaosEngineTests.swiftdeps",
+    "diagnostics": "/Users/little/Documents/Projects/repositories/Caos/.build/arm64-apple-macosx/debug/CaosTests.build/CaosEngineTests.dia"
+  },
+  "/Users/little/Documents/Projects/repositories/Caos/Tests/CaosTests/CaosParserTests.swift": {
+    "dependencies": "/Users/little/Documents/Projects/repositories/Caos/.build/arm64-apple-macosx/debug/CaosTests.build/CaosParserTests.d",
+    "object": "/Users/little/Documents/Projects/repositories/Caos/.build/arm64-apple-macosx/debug/CaosTests.build/CaosParserTests.swift.o",
+    "swiftmodule": "/Users/little/Documents/Projects/repositories/Caos/.build/arm64-apple-macosx/debug/CaosTests.build/CaosParserTests~partial.swiftmodule",
+    "swift-dependencies": "/Users/little/Documents/Projects/repositories/Caos/.build/arm64-apple-macosx/debug/CaosTests.build/CaosParserTests.swiftdeps",
+    "diagnostics": "/Users/little/Documents/Projects/repositories/Caos/.build/arm64-apple-macosx/debug/CaosTests.build/CaosParserTests.dia"
+  },
+  "/Users/little/Documents/Projects/repositories/Caos/Tests/CaosTests/CaosShimmerTests.swift": {
+    "dependencies": "/Users/little/Documents/Projects/repositories/Caos/.build/arm64-apple-macosx/debug/CaosTests.build/CaosShimmerTests.d",
+    "object": "/Users/little/Documents/Projects/repositories/Caos/.build/arm64-apple-macosx/debug/CaosTests.build/CaosShimmerTests.swift.o",
+    "swiftmodule": "/Users/little/Documents/Projects/repositories/Caos/.build/arm64-apple-macosx/debug/CaosTests.build/CaosShimmerTests~partial.swiftmodule",
+    "swift-dependencies": "/Users/little/Documents/Projects/repositories/Caos/.build/arm64-apple-macosx/debug/CaosTests.build/CaosShimmerTests.swiftdeps",
+    "diagnostics": "/Users/little/Documents/Projects/repositories/Caos/.build/arm64-apple-macosx/debug/CaosTests.build/CaosShimmerTests.dia"
+  },
+  "/Users/little/Documents/Projects/repositories/Caos/Tests/CaosTests/CaosStoreTests.swift": {
+    "dependencies": "/Users/little/Documents/Projects/repositories/Caos/.build/arm64-apple-macosx/debug/CaosTests.build/CaosStoreTests.d",
+    "object": "/Users/little/Documents/Projects/repositories/Caos/.build/arm64-apple-macosx/debug/CaosTests.build/CaosStoreTests.swift.o",
+    "swiftmodule": "/Users/little/Documents/Projects/repositories/Caos/.build/arm64-apple-macosx/debug/CaosTests.build/CaosStoreTests~partial.swiftmodule",
+    "swift-dependencies": "/Users/little/Documents/Projects/repositories/Caos/.build/arm64-apple-macosx/debug/CaosTests.build/CaosStoreTests.swiftdeps",
+    "diagnostics": "/Users/little/Documents/Projects/repositories/Caos/.build/arm64-apple-macosx/debug/CaosTests.build/CaosStoreTests.dia"
+  },
+  "/Users/little/Documents/Projects/repositories/Caos/Tests/CaosTests/CaosSwiftUITests.swift": {
+    "dependencies": "/Users/little/Documents/Projects/repositories/Caos/.build/arm64-apple-macosx/debug/CaosTests.build/CaosSwiftUITests.d",
+    "object": "/Users/little/Documents/Projects/repositories/Caos/.build/arm64-apple-macosx/debug/CaosTests.build/CaosSwiftUITests.swift.o",
+    "swiftmodule": "/Users/little/Documents/Projects/repositories/Caos/.build/arm64-apple-macosx/debug/CaosTests.build/CaosSwiftUITests~partial.swiftmodule",
+    "swift-dependencies": "/Users/little/Documents/Projects/repositories/Caos/.build/arm64-apple-macosx/debug/CaosTests.build/CaosSwiftUITests.swiftdeps",
+    "diagnostics": "/Users/little/Documents/Projects/repositories/Caos/.build/arm64-apple-macosx/debug/CaosTests.build/CaosSwiftUITests.dia"
+  },
+  "/Users/little/Documents/Projects/repositories/Caos/.build/arm64-apple-macosx/debug/CaosTests.build/DerivedSources/resource_bundle_accessor.swift": {
+    "dependencies": "/Users/little/Documents/Projects/repositories/Caos/.build/arm64-apple-macosx/debug/CaosTests.build/resource_bundle_accessor.d",
+    "object": "/Users/little/Documents/Projects/repositories/Caos/.build/arm64-apple-macosx/debug/CaosTests.build/resource_bundle_accessor.swift.o",
+    "swiftmodule": "/Users/little/Documents/Projects/repositories/Caos/.build/arm64-apple-macosx/debug/CaosTests.build/resource_bundle_accessor~partial.swiftmodule",
+    "swift-dependencies": "/Users/little/Documents/Projects/repositories/Caos/.build/arm64-apple-macosx/debug/CaosTests.build/resource_bundle_accessor.swiftdeps",
+    "diagnostics": "/Users/little/Documents/Projects/repositories/Caos/.build/arm64-apple-macosx/debug/CaosTests.build/resource_bundle_accessor.dia"
+  }
+}

@@ -1,0 +1,17 @@
+/Users/little/Documents/Projects/repositories/Caos/Sources/Caos/Core/Caos.swift
+/Users/little/Documents/Projects/repositories/Caos/Sources/Caos/Core/CaosDataBinding.swift
+/Users/little/Documents/Projects/repositories/Caos/Sources/Caos/Core/CaosEngine.swift
+/Users/little/Documents/Projects/repositories/Caos/Sources/Caos/Core/CaosError.swift
+/Users/little/Documents/Projects/repositories/Caos/Sources/Caos/Core/CaosStore.swift
+/Users/little/Documents/Projects/repositories/Caos/Sources/Caos/Schema/CaosParser.swift
+/Users/little/Documents/Projects/repositories/Caos/Sources/Caos/Schema/CaosProps.swift
+/Users/little/Documents/Projects/repositories/Caos/Sources/Caos/Schema/CaosSchema.swift
+/Users/little/Documents/Projects/repositories/Caos/Sources/Caos/Schema/CaosScreen.swift
+/Users/little/Documents/Projects/repositories/Caos/Sources/Caos/Schema/CaosShard.swift
+/Users/little/Documents/Projects/repositories/Caos/Sources/Caos/SwiftUI/CaosCoordinator.swift
+/Users/little/Documents/Projects/repositories/Caos/Sources/Caos/SwiftUI/CaosEnvironment.swift
+/Users/little/Documents/Projects/repositories/Caos/Sources/Caos/SwiftUI/CaosScreenView.swift
+/Users/little/Documents/Projects/repositories/Caos/Sources/Caos/SwiftUI/CaosSwiftUIView.swift
+/Users/little/Documents/Projects/repositories/Caos/Sources/Caos/UI/CaosEngineDelegate.swift
+/Users/little/Documents/Projects/repositories/Caos/Sources/Caos/UI/CaosShimmerView.swift
+/Users/little/Documents/Projects/repositories/Caos/Sources/Caos/UI/CaosView.swift
