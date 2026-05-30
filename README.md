@@ -1,7 +1,6 @@
 # Caos
 
 [![CI](https://github.com/andersontizaias/Caos/actions/workflows/ci.yml/badge.svg)](https://github.com/andersontizaias/Caos/actions/workflows/ci.yml)
-[![CocoaPods](https://img.shields.io/cocoapods/v/Caos.svg)](https://cocoapods.org/pods/Caos)
 [![SPM compatible](https://img.shields.io/badge/SPM-compatible-brightgreen)](https://swift.org/package-manager/)
 [![iOS](https://img.shields.io/badge/iOS-16%2B-blue)](https://developer.apple.com/ios/)
 [![Swift](https://img.shields.io/badge/Swift-5.9%2B-orange)](https://swift.org)
@@ -10,7 +9,7 @@
 ![Caos - The Primeval Void](./assets/caos-image.png)
 *Caos — The Primeval Void in Greek Mythology*
 
-**Caos** (**C**onfigurable **A**utomated **O**n-demand **S**creens) is an iOS Server-Driven UI framework that generates screens dynamically from YAML files. Change your UI without redeploying your app.
+**Caos** (**C**onfigurable **A**utomated **O**n-demand **S**creens) is an iOS Server-Driven UI framework that generates SwiftUI screens dynamically from YAML files. Change your UI without redeploying your app.
 
 ---
 
@@ -19,7 +18,7 @@
 ```
 ┌──────────────────────────────────────────────────────┐
 │                    VIEW LAYER                         │
-│   CaosScreenView  ·  UIKit Shards  ·  SwiftUI Shards │
+│          CaosScreenView  ·  SwiftUI Shards            │
 │              ↓ reads                                  │
 │         @Environment(\.caosStore)                     │
 ├──────────────────────────────────────────────────────┤
@@ -57,31 +56,34 @@ screens:
         props:
           title: "Saldo disponível"
           dataKey: "user.balance"
-          backgroundColor: "#FFFFFF"
           cornerRadius: 12
-          textColor: "#1A1A1A"
 ```
 
-**2. Register types and data** in your app:
+**2. Set up your App:**
 
 ```swift
-let store = CaosStore()
-store.register(type: "BalanceCard", view: BalanceCardView.self)
-store.register(key: "user.balance") { UserSession.current.formattedBalance }
-```
+@main
+struct MyApp: App {
+    private let store: CaosStore = {
+        let s = CaosStore()
+        s.register(type: "BalanceCard", view: BalanceCardView.self)
+        s.register(key: "user.balance") { UserSession.current.formattedBalance }
+        return s
+    }()
 
-**3. Show the screen** (SwiftUI):
-
-```swift
-struct HomeView: View {
-    @State private var store = CaosStore()
-
-    var body: some View {
-        CaosScreenView(name: "home")
-            .caosStore(store)
+    var body: some Scene {
+        WindowGroup {
+            CaosScreenView(name: "home")
+                .caosStore(store)
+                .onCaosTap { id, context in
+                    print("Tapped shard:", id, context)
+                }
+        }
     }
 }
 ```
+
+That's it. `CaosScreenView` loads the YAML, resolves each shard type from the store, and renders the screen.
 
 ---
 
@@ -97,66 +99,69 @@ struct HomeView: View {
 | `screens[].container.padding` | Object | — | `top`, `bottom`, `leading`, `trailing` |
 | `screens[].shards` | List | — | Array of shard definitions |
 | `shards[].type` | String | ✅ | Registered shard type name |
-| `shards[].id` | String | — | Unique identifier (used in tap events) |
-| `shards[].props` | Object | — | Typed properties passed to the shard |
+| `shards[].id` | String | — | Unique identifier used in tap events |
+| `shards[].props` | Object | — | Typed properties passed to the shard view |
 
-### Props special keys
+---
 
-| Key | Type | Description |
+## CaosProps API
+
+`CaosProps` wraps the YAML `props` dictionary and provides typed accessors:
+
+| Method | Return | Description |
 |---|---|---|
-| `dataKey` | String | Resolves value from `CaosStore` (reactive) |
-| `backgroundColor` | String | Hex color `#RRGGBB` or `#AARRGGBB` |
-| `textColor` | String | Hex color |
-| `cornerRadius` | Number | Corner radius in points |
+| `string(_ key:)` | `String?` | Raw string value |
+| `int(_ key:)` | `Int?` | Integer value |
+| `double(_ key:)` | `Double` | Floating-point value; defaults to `0.0` |
+| `bool(_ key:)` | `Bool?` | Boolean or string `"true"`/`"false"` |
+| `hexColor(_ key:)` | `String?` | Validates and returns hex color string (`#RGB`, `#RRGGBB`, `#AARRGGBB`) |
+| `nested(_ key:)` | `CaosProps?` | Nested object |
+| `array(_ key:)` | `[CaosProps]?` | Array of objects |
+
+> **Note:** `hexColor(_:)` validates the format but returns a `String`. Converting to `SwiftUI.Color` or `UIColor` is the shard's responsibility.
 
 ---
 
 ## Registering Shards
 
-### UIKit Shard
+Shards are SwiftUI views conforming to `CaosSwiftUIView`. Register them in `CaosStore` before showing any `CaosScreenView`.
+
+### Register a shard type
 
 ```swift
-// 1. Register in CaosStore
+// Register via concrete type (most common)
 store.register(type: "BalanceCard", view: BalanceCardView.self)
 
-// 2. Implement the shard
-final class BalanceCardView: UIView, CaosView {
-    weak var delegate: CaosEngineDelegate?
-    private let binding = CaosDataBinding()
-    private let label = UILabel()
-
-    func configure(with props: CaosProps) {
-        if let title = props.string("title") { titleLabel.text = title }
-        if let bg = props.color("backgroundColor") { backgroundColor = bg }
-        binding.bind(label: label, props: props, store: /* injected in Phase 4 */)
-    }
-
-    func showLoading() { shimmer.startShimmer() }
-    func hideLoading() { shimmer.stopShimmer() }
+// Or register via a custom factory closure
+store.register(type: "BannerCard") { props in
+    AnyView(BannerCardView(props: props))
 }
 ```
 
-### SwiftUI Shard
+### Implement a shard
 
 ```swift
-struct BalanceCardView: View, CaosSwiftUIView {
+struct BalanceCardView: CaosSwiftUIView {
     let props: CaosProps
     @Environment(\.caosStore) private var store
+    @Environment(\.caosTapAction) private var onTap
 
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 4) {
             Text(props.string("title") ?? "")
                 .font(.headline)
             Text(store.resolve(key: props.string("dataKey") ?? "") ?? "--")
                 .font(.title2.bold())
-                .foregroundStyle(props.swiftUIColor("textColor") ?? .primary)
         }
-        .padding(props.double("padding").map(CGFloat.init) ?? 16)
-        .background(props.swiftUIColor("backgroundColor") ?? Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: props.double("cornerRadius").map(CGFloat.init) ?? 12))
+        .padding(16)
+        .background(Color(.systemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: CGFloat(props.double("cornerRadius"))))
+        .onTapGesture { onTap(props.string("id") ?? "", [:]) }
     }
 }
 ```
+
+`CaosSwiftUIView` requires a single `init(props: CaosProps)` — the framework instantiates the shard automatically.
 
 ---
 
@@ -179,76 +184,69 @@ store.register(
 )
 ```
 
-### Reactive binding in UIKit shards
+### Reading a reactive value in a shard
 
 ```swift
-private let binding = CaosDataBinding()
+struct LiveBalanceView: CaosSwiftUIView {
+    let props: CaosProps
+    @Environment(\.caosStore) private var store
+    @State private var balance: String = "--"
 
-func configure(with props: CaosProps) {
-    binding.bind(label: valueLabel, props: props, store: store)
-    // valueLabel.text updates automatically whenever the store emits
-}
-```
-
----
-
-## SwiftUI Usage
-
-```swift
-@main
-struct MyApp: App {
-    @State private var store = CaosStore()
-
-    var body: some Scene {
-        WindowGroup {
-            NavigationStack {
-                CaosScreenView(name: "home")
-                    .caosStore(store)
-                    .navigationTitle("Home")
+    var body: some View {
+        Text(balance)
+            .font(.title2.bold())
+            .task {
+                guard let key = props.string("dataKey"),
+                      let publisher: AnyPublisher<String, Never> = store.publisher(for: key)
+                else { return }
+                for await value in publisher.values {
+                    balance = value
+                }
             }
-            .caosStore(store)
-        }
-    }
-
-    init() {
-        store.register(type: "BalanceCard",  view: BalanceCardView.self)
-        store.register(type: "ShortcutsRow", view: ShortcutsRowView.self)
-        store.register(key: "user.balance",  provider: { UserSession.current.balance })
     }
 }
 ```
 
 ---
 
-## UIKit Usage
+## Tap Events
+
+Every shard can dispatch a tap event via the `caosTapAction` environment value. The `id` comes from the `id:` field in the YAML.
+
+**In your shard:**
 
 ```swift
-class HomeViewController: UIViewController, CaosEngineDelegate {
+@Environment(\.caosTapAction) private var onTap
 
-    var rootView: UIView { view }
-    private let store = CaosStore()
+// Inside body:
+.onTapGesture { onTap(props.string("id") ?? "", [:]) }
+```
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupStore()
-        guard let screen = Caos.configure(bundle: .main, name: "home", target: self, store: store)?
-            .getScreenByIndex(index: 0) else { return }
-        view.addSubview(screen)
-        // add constraints...
-    }
+**Handle events on the parent:**
 
-    private func setupStore() {
-        store.register(type: "BalanceCard", view: BalanceCardView.self)
-        store.register(key: "user.balance") { UserSession.current.formattedBalance }
-    }
-
-    func didTapShard(id: String, context: [String: Any]) {
+```swift
+CaosScreenView(name: "home")
+    .caosStore(store)
+    .onCaosTap { id, context in
         switch id {
         case "card_balance": navigateToBalance()
         default: break
         }
     }
-}
+```
+
+---
+
+## Loading States
+
+`CaosScreenView` shows a `ProgressView` while the YAML loads, then either renders the screen or shows an error view if parsing fails.
+
+To show a shimmer placeholder while your shard fetches data:
+
+```swift
+Text(balance ?? "")
+    .redacted(reason: balance == nil ? .placeholder : [])
+    .shimmer(isActive: balance == nil)
 ```
 
 ---
@@ -298,12 +296,6 @@ dependencies: [
 ```
 
 Or via Xcode: **File → Add Package Dependencies** and enter the repository URL.
-
-### CocoaPods
-
-```ruby
-pod 'Caos', '~> 1.0'
-```
 
 ---
 
