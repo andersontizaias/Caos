@@ -12,14 +12,14 @@ public struct CaosUnknownShardView: View {
 
     public var body: some View {
         #if DEBUG
-        Text("⚠ Shard '\(type)' não registrado")
-            .font(.caption)
-            .foregroundStyle(.secondary)
-            .padding(8)
-            .background(Color(white: 0.95))
-            .clipShape(RoundedRectangle(cornerRadius: 6))
+            Text("⚠ Shard '\(type)' não registrado")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .padding(8)
+                .background(Color(white: 0.95))
+                .clipShape(RoundedRectangle(cornerRadius: 6))
         #else
-        EmptyView()
+            EmptyView()
         #endif
     }
 }

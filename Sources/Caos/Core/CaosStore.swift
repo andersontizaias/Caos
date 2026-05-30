@@ -1,12 +1,11 @@
-import Foundation
 import Combine
+import Foundation
 import SwiftUI
 
 /// Central Model for the Caos MV architecture.
 /// Manages data providers, reactive publishers, and shard type registration.
 @available(iOS 16.0, macOS 13.0, *)
 public final class CaosStore: ObservableObject {
-
     // MARK: - Private state
 
     private var shardRegistry: [String: (CaosProps) -> AnyView] = [:]
@@ -24,7 +23,7 @@ public final class CaosStore: ObservableObject {
     }
 
     /// Registra um shard via tipo que conforma CaosSwiftUIView.
-    public func register<V: CaosSwiftUIView>(type: String, view: V.Type) {
+    public func register<V: CaosSwiftUIView>(type: String, view _: V.Type) {
         shardRegistry[type] = { props in AnyView(V(props: props)) }
     }
 
@@ -39,13 +38,13 @@ public final class CaosStore: ObservableObject {
     // MARK: - Data registration
 
     /// Registra um provider síncrono para uma chave.
-    public func register<T>(key: String, provider: @escaping () -> T) {
+    public func register(key: String, provider: @escaping () -> some Any) {
         providers[key] = { provider() }
         subjects[key]?.send(provider() as Any)
     }
 
     /// Registra um publisher Combine para uma chave.
-    public func register<T>(key: String, publisher: AnyPublisher<T, Never>) {
+    public func register(key: String, publisher: AnyPublisher<some Any, Never>) {
         let subject = subjects[key] ?? CurrentValueSubject<Any, Never>(NSNull())
         subjects[key] = subject
         publisher

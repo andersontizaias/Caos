@@ -13,7 +13,6 @@ import SwiftUI
 ///     .shimmer()
 /// ```
 public struct ShimmerModifier: ViewModifier {
-
     let isActive: Bool
 
     @State private var phase: CGFloat = 0
@@ -46,7 +45,7 @@ public struct ShimmerModifier: ViewModifier {
                 colors: [
                     Color(white: 0.88),
                     Color(white: 0.78),
-                    Color(white: 0.88)
+                    Color(white: 0.88),
                 ],
                 startPoint: .leading,
                 endPoint: .trailing

@@ -1,7 +1,8 @@
-import Foundation
 import Caos
+import Foundation
 
 // MARK: - caos-lint CLI
+
 // Validates a Caos YAML v1 file and reports issues.
 // Usage: swift run caos-lint <path-to-yaml>
 
@@ -24,7 +25,7 @@ func lint(filePath: String) -> LintResult {
     } catch CaosError.missingVersion {
         result.errors.append("Missing 'version' field — YAML v1 requires version: 1 as the first key")
         return result
-    } catch CaosError.unsupportedVersion(let v) {
+    } catch let CaosError.unsupportedVersion(v) {
         result.errors.append("Unsupported schema version \(v) — expected 1")
         return result
     } catch {
@@ -77,11 +78,12 @@ let result = lint(filePath: filePath)
 for warning in result.warnings {
     print("⚠ \(warning)")
 }
+
 for error in result.errors {
     print("✗ \(error)")
 }
 
-if result.errors.isEmpty && result.warnings.isEmpty {
+if result.errors.isEmpty, result.warnings.isEmpty {
     print("✅ No issues found")
     exit(0)
 } else if result.errors.isEmpty {

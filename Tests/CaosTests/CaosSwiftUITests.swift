@@ -1,10 +1,9 @@
-import XCTest
-import SwiftUI
 @testable import Caos
+import SwiftUI
+import XCTest
 
 @available(iOS 16.0, macOS 13.0, *)
 final class CaosSwiftUITests: XCTestCase {
-
     // MARK: - CaosSwiftUIView protocol
 
     func testStubConformsToProtocol() {
@@ -67,5 +66,7 @@ final class CaosSwiftUITests: XCTestCase {
 @available(iOS 16.0, macOS 13.0, *)
 private struct StubView: CaosSwiftUIView {
     let props: CaosProps
-    var body: some View { EmptyView() }
+    var body: some View {
+        EmptyView()
+    }
 }

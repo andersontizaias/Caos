@@ -1,11 +1,10 @@
-import XCTest
-import SwiftUI
-import Combine
 @testable import Caos
+import Combine
+import SwiftUI
+import XCTest
 
 @available(iOS 16.0, macOS 13.0, *)
 final class CaosStoreTests: XCTestCase {
-
     var store: CaosStore!
 
     override func setUp() {
@@ -92,5 +91,7 @@ final class CaosStoreTests: XCTestCase {
 @available(iOS 16.0, macOS 13.0, *)
 private struct StubShardView: CaosSwiftUIView {
     let props: CaosProps
-    var body: some View { Text(props.string("label") ?? "") }
+    var body: some View {
+        Text(props.string("label") ?? "")
+    }
 }

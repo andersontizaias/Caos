@@ -1,10 +1,3 @@
-//
-//  CaosSchema.swift
-//  Caos
-//
-//  Created by Anderson Tiago Izaias on 29/05/26.
-//
-
 import Foundation
 
 public struct CaosSchema {

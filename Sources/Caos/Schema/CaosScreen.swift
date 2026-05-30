@@ -17,7 +17,7 @@ public struct CaosEdgeInsets: Sendable {
 }
 
 public struct CaosContainer {
-    public let type: String         // "vertical" | "horizontal" | "grid"
+    public let type: String // "vertical" | "horizontal" | "grid"
     public let spacing: CGFloat
     public let padding: CaosEdgeInsets
 
@@ -30,7 +30,7 @@ public struct CaosContainer {
 
 public class CaosScreen {
     public var id: String = ""
-    public var containerConfig: CaosContainer = CaosContainer()
+    public var containerConfig: CaosContainer = .init()
     public var shardList: [CaosShard] = []
 
     public init() {}

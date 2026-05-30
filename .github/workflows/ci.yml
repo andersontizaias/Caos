@@ -55,7 +55,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-results-${{ matrix.destination }}
+          name: test-results-${{ strategy.job-index }}
           path: TestResults.xcresult
 
   coverage:
@@ -67,7 +67,7 @@ jobs:
       - name: Download Test Results
         uses: actions/download-artifact@v4
         with:
-          name: "test-results-platform=iOS Simulator,name=iPhone 16,OS=18.0"
+          name: "test-results-0"
 
       - name: Extract Coverage
         run: xcrun xccov view --report --json TestResults.xcresult > coverage.json
@@ -81,12 +81,3 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: coverage.json
 
-  danger:
-    runs-on: macos-15
-    needs: build-and-test
-    steps:
-      - uses: actions/checkout@v4
-      - name: Danger
-        run: bundle exec danger
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

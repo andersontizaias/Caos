@@ -1,15 +1,7 @@
-//
-//  CaosParserTests.swift
-//  CaosTests
-//
-//  Created by Anderson Tiago Izaias on 29/05/26.
-//
-
-import XCTest
 @testable import Caos
+import XCTest
 
 final class CaosParserTests: XCTestCase {
-
     // MARK: - Helpers
 
     private func fixture(_ name: String) -> String {

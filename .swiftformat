@@ -7,3 +7,4 @@
 --semicolons never
 --header strip
 --exclude .build,Pods,Example
+--disable andOperator

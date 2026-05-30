@@ -46,7 +46,6 @@ struct CaosContainerView: View {
         }
     }
 
-    @ViewBuilder
     private var shardViews: some View {
         ForEach(Array(screen.shardList.enumerated()), id: \.offset) { _, shard in
             store.view(for: shard.type, props: shard.props)
