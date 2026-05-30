@@ -106,6 +106,15 @@ public class CaosViewCard: UIView, CaosView {
         shardView.addGestureRecognizer(tap)
     }
     
+    public func configure(with props: CaosProps) {
+        if let title = props.string("title") { shardLabel.text = title }
+        if let valueLabel = props.string("valueLabel") { totalLabel.text = valueLabel }
+        if let bg = props.color("backgroundColor") { shardView.backgroundColor = bg }
+        if let radius = props.double("cornerRadius") { shardView.layer.cornerRadius = CGFloat(radius) }
+        if let iconName = props.string("iconName") { imageView.image = UIImage(systemName: iconName) }
+        if let iconColor = props.color("iconColor") { imageView.tintColor = iconColor }
+    }
+
     @objc func handlerTap(){
         delegate?.didTapCardView(context: "Click Here")
         totalValue.text = delegate?.requestDataForLabel()

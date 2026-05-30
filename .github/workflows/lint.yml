@@ -1,0 +1,40 @@
+name: Lint
+
+on: [push]
+
+jobs:
+  swiftlint:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache SwiftLint
+        id: cache-swiftlint
+        uses: actions/cache@v4
+        with:
+          path: /usr/local/bin/swiftlint
+          key: swiftlint-${{ runner.os }}-0.57.0
+
+      - name: Install SwiftLint
+        if: steps.cache-swiftlint.outputs.cache-hit != 'true'
+        run: brew install swiftlint
+
+      - name: SwiftLint
+        run: swiftlint --strict --reporter github-actions-logging
+
+  swiftformat:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install SwiftFormat 0.61.1
+        run: |
+          curl -L https://github.com/nicklockwood/SwiftFormat/releases/download/0.61.1/swiftformat.zip \
+            -o /tmp/swiftformat.zip
+          unzip -q /tmp/swiftformat.zip -d /tmp/swiftformat
+          sudo mv -f /tmp/swiftformat/swiftformat /opt/homebrew/bin/swiftformat
+          sudo chmod +x /opt/homebrew/bin/swiftformat
+          swiftformat --version
+
+      - name: SwiftFormat (check only)
+        run: swiftformat Sources Tests --lint
