@@ -1,5 +1,4 @@
 // swift-tools-version: 5.9
-// NOTE: Stub for SPM recognition. Full implementation in Phase 5.
 import PackageDescription
 
 let package = Package(
@@ -7,11 +6,26 @@ let package = Package(
     platforms: [.iOS(.v16)],
     products: [
         .library(name: "Caos", targets: ["Caos"]),
+        .executable(name: "caos-lint", targets: ["CaosLint"]),
     ],
     targets: [
         .target(
             name: "Caos",
-            path: "Caos/Classes"
+            path: "Sources/Caos",
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency"),
+            ]
+        ),
+        .executableTarget(
+            name: "CaosLint",
+            dependencies: ["Caos"],
+            path: "Sources/CaosLint"
+        ),
+        .testTarget(
+            name: "CaosTests",
+            dependencies: ["Caos"],
+            path: "Tests/CaosTests",
+            resources: [.copy("Fixtures")]
         ),
     ]
 )

@@ -13,5 +13,5 @@ Pod::Spec.new do |s|
   s.source           = { :git => 'https://github.com/andersontizaias/Caos.git', :tag => s.version.to_s }
   s.ios.deployment_target = '16.0'
   s.swift_version = '5.9'
-  s.source_files = 'Caos/Classes/**/*'
+  s.source_files = 'Sources/Caos/**/*'
 end

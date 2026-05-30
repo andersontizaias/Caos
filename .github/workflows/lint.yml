@@ -1,0 +1,23 @@
+name: Lint
+
+on: [push]
+
+jobs:
+  swiftlint:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache SwiftLint
+        uses: actions/cache@v4
+        with:
+          path: ~/.swiftlint
+          key: swiftlint-${{ runner.os }}
+      - name: SwiftLint
+        run: swiftlint --strict --reporter github-actions-logging
+
+  swiftformat:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: SwiftFormat (check only)
+        run: swiftformat --lint Sources Tests
