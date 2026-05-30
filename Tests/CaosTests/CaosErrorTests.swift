@@ -1,5 +1,5 @@
-import XCTest
 @testable import Caos
+import XCTest
 
 final class CaosErrorTests: XCTestCase {
     func test_missingVersion_errorDescription() {

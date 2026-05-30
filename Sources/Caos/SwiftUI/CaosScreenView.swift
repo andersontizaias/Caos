@@ -28,8 +28,8 @@ public struct CaosScreenView: View {
     init(name: String, bundle: Bundle = .main, preloadedSchema: CaosSchema?, preloadedError: CaosError?) {
         self.name = name
         self.bundle = bundle
-        self._schema = State(initialValue: preloadedSchema)
-        self._parseError = State(initialValue: preloadedError)
+        _schema = State(initialValue: preloadedSchema)
+        _parseError = State(initialValue: preloadedError)
     }
 
     public var body: some View {
