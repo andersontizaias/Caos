@@ -16,15 +16,15 @@ public struct CaosProps {
     }
 
     public func double(_ key: String) -> Double {
-        if let d = data[key] as? Double { return d }
-        if let i = data[key] as? Int { return Double(i) }
-        if let s = data[key] as? String, let d = Double(s) { return d }
+        if let doubleValue = data[key] as? Double { return doubleValue }
+        if let intValue = data[key] as? Int { return Double(intValue) }
+        if let stringValue = data[key] as? String, let parsed = Double(stringValue) { return parsed }
         return 0.0
     }
 
     public func bool(_ key: String) -> Bool? {
-        if let b = data[key] as? Bool { return b }
-        if let s = data[key] as? String { return s == "true" }
+        if let boolValue = data[key] as? Bool { return boolValue }
+        if let stringValue = data[key] as? String { return stringValue == "true" }
         return nil
     }
 

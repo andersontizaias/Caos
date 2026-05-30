@@ -11,8 +11,8 @@ public enum CaosError: Error, LocalizedError {
             "Caos: YAML must include 'version' as the first non-empty field."
         case let .invalidYAML(line, reason):
             "Caos: Invalid YAML at line \(line): \(reason)"
-        case let .unsupportedVersion(v):
-            "Caos: Unsupported schema version \(v). Expected 1."
+        case let .unsupportedVersion(version):
+            "Caos: Unsupported schema version \(version). Expected 1."
         }
     }
 }

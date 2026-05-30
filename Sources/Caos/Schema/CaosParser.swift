@@ -36,10 +36,10 @@ public class CaosParser {
 
         if let containerDict = dict["container"] as? [String: Any] {
             let type = containerDict["type"] as? String ?? "vertical"
-            let spacing: CGFloat = if let d = containerDict["spacing"] as? Double {
-                CGFloat(d)
-            } else if let i = containerDict["spacing"] as? Int {
-                CGFloat(i)
+            let spacing: CGFloat = if let doubleValue = containerDict["spacing"] as? Double {
+                CGFloat(doubleValue)
+            } else if let intValue = containerDict["spacing"] as? Int {
+                CGFloat(intValue)
             } else {
                 0
             }
@@ -65,8 +65,8 @@ public class CaosParser {
     }
 
     private static func cgfloat(from value: Any?) -> CGFloat {
-        if let d = value as? Double { return CGFloat(d) }
-        if let i = value as? Int { return CGFloat(i) }
+        if let doubleValue = value as? Double { return CGFloat(doubleValue) }
+        if let intValue = value as? Int { return CGFloat(intValue) }
         return 0
     }
 
@@ -145,13 +145,13 @@ enum YAMLParser {
         // Skip blank / comment lines to peek at what kind of block this is
         var peek = index
         while peek < lines.count {
-            let t = lines[peek].trimmingCharacters(in: .whitespaces)
-            if t.isEmpty || t.hasPrefix("#") { peek += 1
+            let trimmed = lines[peek].trimmingCharacters(in: .whitespaces)
+            if trimmed.isEmpty || trimmed.hasPrefix("#") { peek += 1
                 continue
             }
-            let li = leadingSpaces(lines[peek])
-            if li < indent { return nil }
-            if t.hasPrefix("-") {
+            let indentLevel = leadingSpaces(lines[peek])
+            if indentLevel < indent { return nil }
+            if trimmed.hasPrefix("-") {
                 return parseSequence(lines: lines, index: &index, indent: indent)
             } else {
                 return parseMapping(lines: lines, index: &index, indent: indent)
@@ -176,13 +176,13 @@ enum YAMLParser {
                 continue
             }
 
-            let li = leadingSpaces(line)
+            let indentLevel = leadingSpaces(line)
 
             // Dedent means we're done with this mapping level
-            if li < indent { break }
+            if indentLevel < indent { break }
 
             // A deeper indent level that isn't a continuation means something is wrong — skip
-            if li > indent { index += 1
+            if indentLevel > indent { index += 1
                 continue
             }
 
@@ -203,8 +203,8 @@ enum YAMLParser {
             if rest.isEmpty || rest == "|" || rest == ">" {
                 // Value is on subsequent indented lines — look ahead
                 let childIndent = nextContentIndent(lines: lines, from: index)
-                if let ci = childIndent, ci > indent {
-                    if let val = parseBlock(lines: lines, index: &index, indent: ci) {
+                if let nestedIndent = childIndent, nestedIndent > indent {
+                    if let val = parseBlock(lines: lines, index: &index, indent: nestedIndent) {
                         result[key] = val
                     }
                 }
@@ -234,9 +234,9 @@ enum YAMLParser {
                 continue
             }
 
-            let li = leadingSpaces(line)
-            if li < indent { break }
-            if li > indent { index += 1
+            let indentLevel = leadingSpaces(line)
+            if indentLevel < indent { break }
+            if indentLevel > indent { index += 1
                 continue
             } // malformed deeper indent — skip
             guard trimmed.hasPrefix("-") else { break }
@@ -261,8 +261,9 @@ enum YAMLParser {
                         .trimmingCharacters(in: .whitespaces)
                     if inlineRest.isEmpty {
                         // value is on next lines at itemBodyIndent
-                        if let ci = nextContentIndent(lines: lines, from: index), ci >= itemBodyIndent {
-                            if let val = parseBlock(lines: lines, index: &index, indent: ci) {
+                        let nestedIndent = nextContentIndent(lines: lines, from: index)
+                        if let nestedIndent, nestedIndent >= itemBodyIndent {
+                            if let val = parseBlock(lines: lines, index: &index, indent: nestedIndent) {
                                 itemDict[inlineKey] = val
                             }
                         }
@@ -274,8 +275,8 @@ enum YAMLParser {
 
             // Parse remaining key-value pairs for this item at itemBodyIndent
             let more = parseMapping(lines: lines, index: &index, indent: itemBodyIndent) as? [String: Any] ?? [:]
-            for (k, v) in more {
-                itemDict[k] = v
+            for (key, value) in more {
+                itemDict[key] = value
             }
 
             // Handle empty sequence items `[]`
@@ -287,85 +288,85 @@ enum YAMLParser {
     // MARK: - Helpers
 
     /// Find the colon that delimits a YAML key (not inside quotes).
-    private static func findKeyColon(_ s: String) -> String.Index? {
+    private static func findKeyColon(_ line: String) -> String.Index? {
         var inSingleQuote = false
         var inDoubleQuote = false
-        var i = s.startIndex
-        while i < s.endIndex {
-            let c = s[i]
-            if c == "'" && !inDoubleQuote {
+        var cursor = line.startIndex
+        while cursor < line.endIndex {
+            let char = line[cursor]
+            if char == "'" && !inDoubleQuote {
                 inSingleQuote.toggle()
-            } else if c == "\"" && !inSingleQuote {
+            } else if char == "\"" && !inSingleQuote {
                 inDoubleQuote.toggle()
-            } else if c == ":" && !inSingleQuote && !inDoubleQuote {
-                let next = s.index(after: i)
-                if next == s.endIndex || s[next] == " " || s[next] == "\t" {
-                    return i
+            } else if char == ":" && !inSingleQuote && !inDoubleQuote {
+                let next = line.index(after: cursor)
+                if next == line.endIndex || line[next] == " " || line[next] == "\t" {
+                    return cursor
                 }
             }
-            i = s.index(after: i)
+            cursor = line.index(after: cursor)
         }
         return nil
     }
 
     /// Strip inline YAML comment (# preceded by space).
-    private static func stripInlineComment(_ s: String) -> String {
+    private static func stripInlineComment(_ line: String) -> String {
         var inSingle = false, inDouble = false
         var prev: Character = " "
-        var i = s.startIndex
-        while i < s.endIndex {
-            let c = s[i]
-            if c == "'" && !inDouble {
+        var cursor = line.startIndex
+        while cursor < line.endIndex {
+            let char = line[cursor]
+            if char == "'" && !inDouble {
                 inSingle.toggle()
-            } else if c == "\"" && !inSingle {
+            } else if char == "\"" && !inSingle {
                 inDouble.toggle()
-            } else if c == "#" && !inSingle && !inDouble && (prev == " " || prev == "\t") {
-                return String(s[s.startIndex ..< i]).trimmingCharacters(in: .whitespaces)
+            } else if char == "#" && !inSingle && !inDouble && (prev == " " || prev == "\t") {
+                return String(line[line.startIndex ..< cursor]).trimmingCharacters(in: .whitespaces)
             }
-            prev = c
-            i = s.index(after: i)
+            prev = char
+            cursor = line.index(after: cursor)
         }
-        return s
+        return line
     }
 
     /// Find the indent of the next non-blank, non-comment line at or after `from`.
     private static func nextContentIndent(lines: [String], from: Int) -> Int? {
-        var i = from
-        while i < lines.count {
-            let t = lines[i].trimmingCharacters(in: .whitespaces)
-            if !t.isEmpty, !t.hasPrefix("#") {
-                return leadingSpaces(lines[i])
+        var cursor = from
+        while cursor < lines.count {
+            let trimmed = lines[cursor].trimmingCharacters(in: .whitespaces)
+            if !trimmed.isEmpty, !trimmed.hasPrefix("#") {
+                return leadingSpaces(lines[cursor])
             }
-            i += 1
+            cursor += 1
         }
         return nil
     }
 
     /// Parse a scalar YAML value into Int, Double, Bool, or String.
-    static func parseScalar(_ s: String) -> Any {
+    static func parseScalar(_ raw: String) -> Any {
         // Handle empty sequence shorthand
-        if s == "[]" { return [[String: Any]]() }
-        if s == "{}" { return [String: Any]() }
+        if raw == "[]" { return [[String: Any]]() }
+        if raw == "{}" { return [String: Any]() }
 
         // Remove surrounding quotes
-        if s.count >= 2 {
-            if (s.hasPrefix("\"") && s.hasSuffix("\"")) || (s.hasPrefix("'") && s.hasSuffix("'")) {
-                return String(s.dropFirst().dropLast())
+        if raw.count >= 2 {
+            if (raw.hasPrefix("\"") && raw.hasSuffix("\"")) || (raw.hasPrefix("'") && raw.hasSuffix("'")) {
+                return String(raw.dropFirst().dropLast())
             }
         }
-        if s == "true" { return true }
-        if s == "false" { return false }
-        if s == "null" || s == "~" { return NSNull() }
-        if let i = Int(s) { return i }
-        if let d = Double(s) { return d }
-        return s
+        if raw == "true" { return true }
+        if raw == "false" { return false }
+        if raw == "null" || raw == "~" { return NSNull() }
+        if let intValue = Int(raw) { return intValue }
+        if let doubleValue = Double(raw) { return doubleValue }
+        return raw
     }
 
     /// Count leading space characters in a string.
-    static func leadingSpaces(_ s: String) -> Int {
+    static func leadingSpaces(_ line: String) -> Int {
         var count = 0
-        for c in s {
-            if c == " " { count += 1 } else { break }
+        for char in line {
+            if char == " " { count += 1 } else { break }
         }
         return count
     }
