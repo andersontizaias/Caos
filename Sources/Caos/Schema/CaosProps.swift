@@ -1,11 +1,4 @@
 import Foundation
-#if canImport(UIKit)
-import UIKit
-public typealias CaosColor = UIColor
-#elseif canImport(AppKit)
-import AppKit
-public typealias CaosColor = NSColor
-#endif
 
 public struct CaosProps {
     let data: [String: Any]
@@ -34,34 +27,13 @@ public struct CaosProps {
         return arr.map { CaosProps($0) }
     }
 
-    /// Parses a hex color string (#RGB, #RRGGBB, #AARRGGBB) into a platform color.
-    public func color(_ key: String) -> CaosColor? {
+    /// Valida se uma chave contém uma string de cor hex válida (#RGB, #RRGGBB, #AARRGGBB).
+    /// A conversão para UIColor/NSColor/SwiftUI.Color é responsabilidade do app.
+    public func hexColor(_ key: String) -> String? {
         guard let hex = data[key] as? String else { return nil }
-        var cleaned = hex.hasPrefix("#") ? String(hex.dropFirst()) : hex
-        switch cleaned.count {
-        case 3:
-            cleaned = cleaned.map { "\($0)\($0)" }.joined()
-        case 6:
-            break
-        case 8:
-            break
-        default:
-            return nil
-        }
-        guard cleaned.count == 6 || cleaned.count == 8,
-              let value = UInt64(cleaned, radix: 16) else { return nil }
-        let a, r, g, b: CGFloat
-        if cleaned.count == 8 {
-            a = CGFloat((value >> 24) & 0xFF) / 255
-            r = CGFloat((value >> 16) & 0xFF) / 255
-            g = CGFloat((value >>  8) & 0xFF) / 255
-            b = CGFloat( value        & 0xFF) / 255
-        } else {
-            a = 1.0
-            r = CGFloat((value >> 16) & 0xFF) / 255
-            g = CGFloat((value >>  8) & 0xFF) / 255
-            b = CGFloat( value        & 0xFF) / 255
-        }
-        return CaosColor(red: r, green: g, blue: b, alpha: a)
+        let cleaned = hex.hasPrefix("#") ? String(hex.dropFirst()) : hex
+        guard [3, 6, 8].contains(cleaned.count),
+              cleaned.allSatisfy({ $0.isHexDigit }) else { return nil }
+        return hex
     }
 }

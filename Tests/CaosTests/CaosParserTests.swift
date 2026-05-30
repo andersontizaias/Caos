@@ -91,30 +91,24 @@ final class CaosParserTests: XCTestCase {
 
     // MARK: - CaosProps
 
-    func test_props_color_sixDigitHex() {
+    func test_props_hexColor_sixDigitHex() {
         let props = CaosProps(["color": "#FF5500"])
-        let color = props.color("color")
-        XCTAssertNotNil(color)
-        var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
-        color?.getRed(&r, green: &g, blue: &b, alpha: &a)
-        XCTAssertEqual(r, CGFloat(0xFF) / 255, accuracy: 0.01)
-        XCTAssertEqual(g, CGFloat(0x55) / 255, accuracy: 0.01)
-        XCTAssertEqual(b, CGFloat(0x00) / 255, accuracy: 0.01)
-        XCTAssertEqual(a, 1.0, accuracy: 0.01)
+        XCTAssertEqual(props.hexColor("color"), "#FF5500")
     }
 
-    func test_props_color_eightDigitHex_withAlpha() {
+    func test_props_hexColor_eightDigitHex_withAlpha() {
         let props = CaosProps(["color": "#80FF5500"])
-        let color = props.color("color")
-        XCTAssertNotNil(color)
-        var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
-        color?.getRed(&r, green: &g, blue: &b, alpha: &a)
-        XCTAssertEqual(a, CGFloat(0x80) / 255, accuracy: 0.01)
+        XCTAssertEqual(props.hexColor("color"), "#80FF5500")
     }
 
-    func test_props_color_invalidHex_returnsNil() {
+    func test_props_hexColor_threeDigitShorthand() {
+        let props = CaosProps(["color": "#F50"])
+        XCTAssertEqual(props.hexColor("color"), "#F50")
+    }
+
+    func test_props_hexColor_invalidHex_returnsNil() {
         let props = CaosProps(["color": "notacolor"])
-        XCTAssertNil(props.color("color"))
+        XCTAssertNil(props.hexColor("color"))
     }
 
     func test_props_double_fromInt() {
@@ -152,7 +146,7 @@ final class CaosParserTests: XCTestCase {
         XCTAssertEqual(props.double("doubleProp"), 3.14, accuracy: 0.001)
         XCTAssertEqual(props.bool("boolPropTrue"), true)
         XCTAssertEqual(props.bool("boolPropFalse"), false)
-        XCTAssertNotNil(props.color("colorProp"))
-        XCTAssertNotNil(props.color("colorWithAlpha"))
+        XCTAssertNotNil(props.hexColor("colorProp"))
+        XCTAssertNotNil(props.hexColor("colorWithAlpha"))
     }
 }
