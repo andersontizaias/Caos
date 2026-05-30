@@ -3,7 +3,7 @@
 //  Caos_Example
 //
 //  Created by Anderson Tiago Izaias on 17/10/23.
-//  Copyright © 2023 CocoaPods. All rights reserved.
+//  Copyright © 2023 Anderson Tiago Izaias. All rights reserved.
 //
 
 import UIKit
