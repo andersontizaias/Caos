@@ -29,10 +29,10 @@ public struct ShimmerModifier: ViewModifier {
             .animation(.easeInOut(duration: 0.3), value: isActive)
             .onAppear {
                 guard isActive else { return }
-                _startAnimation()
+                startAnimation()
             }
             .onChange(of: isActive) { active in
-                if active { _startAnimation() } else { phase = 0 }
+                if active { startAnimation() } else { phase = 0 }
             }
     }
 
@@ -57,7 +57,7 @@ public struct ShimmerModifier: ViewModifier {
         .allowsHitTesting(false)
     }
 
-    func _startAnimation() {
+    func startAnimation() {
         phase = 0
         withAnimation(.linear(duration: 1.4).repeatForever(autoreverses: false)) {
             phase = 1

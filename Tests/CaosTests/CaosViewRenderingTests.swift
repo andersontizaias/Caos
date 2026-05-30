@@ -1,11 +1,9 @@
+@testable import Caos
 import SwiftUI
 import XCTest
 
-@testable import Caos
-
 @available(iOS 16.0, macOS 13.0, *)
 final class CaosViewRenderingTests: XCTestCase {
-
     // MARK: - CaosContainerView body
 
     func test_containerView_vertical_body() {
@@ -116,12 +114,12 @@ final class CaosViewRenderingTests: XCTestCase {
 
     func test_shimmerModifier_startAnimation() {
         let modifier = ShimmerModifier(isActive: true)
-        modifier._startAnimation()
+        modifier.startAnimation()
     }
 
     func test_shimmerModifier_startAnimation_inactive() {
         let modifier = ShimmerModifier(isActive: false)
-        modifier._startAnimation()
+        modifier.startAnimation()
     }
 
     // MARK: - CaosEnvironment modifiers
