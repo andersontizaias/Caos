@@ -66,4 +66,8 @@ warn "#{added_todos} TODO/FIXME/HACK adicionado(s). Abra issues para rastrear o 
 
 # ── SwiftLint (comentários inline nos arquivos modificados) ───────────────────
 
-swiftlint.lint_files inline_mode: true
+swiftlint_files = (git.modified_files + git.added_files)
+  .select { |f| f.end_with?(".swift") }
+  .reject { |f| f.start_with?("Example/") || f.start_with?("Sources/CaosLint") }
+
+swiftlint.lint_files(swiftlint_files, inline_mode: true) unless swiftlint_files.empty?
