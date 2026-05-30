@@ -1,111 +1,111 @@
 # Contributing to Caos
 
-Obrigado pelo interesse em contribuir! Siga as diretrizes abaixo.
+Thank you for your interest in contributing! Please follow the guidelines below.
 
-## Setup do ambiente
+## Environment setup
 
 ```bash
-# Clone e entre no diretório
+# Clone and enter the directory
 git clone https://github.com/andersontizaias/Caos.git
 cd Caos
 
-# Gera o Caos.xcodeproj e o CaosExample.xcodeproj (requer Homebrew)
+# Generates Caos.xcodeproj and CaosExample.xcodeproj (requires Homebrew)
 make setup
 
-# Abre direto no Xcode
+# Opens directly in Xcode
 make open
 ```
 
-O `Caos.xcodeproj` é **gerado** pelo XcodeGen e não versionado. A fonte de verdade é o `project.yml`.
+`Caos.xcodeproj` is **generated** by XcodeGen and is not versioned. The source of truth is `project.yml`.
 
-## Fluxo de trabalho
+## Workflow
 
-1. Fork o repositório e crie sua branch a partir de `develop`:
+1. Fork the repository and create your branch from `develop`:
    ```bash
    git checkout develop
-   git checkout -b feature/minha-feature
+   git checkout -b feature/my-feature
    ```
 
-2. Implemente sua mudança seguindo as diretrizes abaixo
+2. Implement your change following the guidelines below
 
-3. Garanta que os testes passam e cobertura ≥ 90%:
+3. Make sure tests pass and coverage is ≥ 90%:
    ```bash
    swift test --enable-code-coverage
    ```
 
-4. Abra um Pull Request para `develop` com título no padrão Conventional Commits
+4. Open a Pull Request to `develop` with a title following the Conventional Commits format
 
-## Padrões de código
+## Code standards
 
-- **Arquitetura MV**: sem ViewModels. Views lêem de `CaosStore` via `@Environment`
-- **SwiftLint**: `swiftlint --strict` deve passar com 0 violations
-- **SwiftFormat**: `swiftformat --lint Sources Tests`
-- **iOS 16+**: não use APIs exclusivas de iOS 17+ sem guard de disponibilidade
-- **Stdlib only no parser**: `CaosParser` não pode ter dependências externas
+- **MV architecture**: no ViewModels. Views read from `CaosStore` via `@Environment`
+- **SwiftLint**: `swiftlint --strict` must pass with 0 violations
+- **SwiftFormat**: `swiftformat --lint Sources Tests` must report no changes needed
+- **iOS 16+**: do not use APIs exclusive to iOS 17+ without an availability guard
+- **Stdlib only in the parser**: `CaosParser` must have no external dependencies
 
-## Adicionando um novo tipo de shard
+## Adding a new shard type
 
-1. Crie sua view conformando a `CaosSwiftUIView`
-2. Documente as `CaosProps` aceitas com tipos e valores padrão
-3. Registre via `CaosStore.register(type:view:)` no app consumidor
-4. Adicione testes unitários cobrindo as props
+1. Create your view conforming to `CaosSwiftUIView`
+2. Document the accepted `CaosProps` with types and default values
+3. Register via `CaosStore.register(type:view:)` in the consumer app
+4. Add unit tests covering the props
 
-## Adicionando suporte a novas props
+## Adding support for new props
 
-1. Aceite o novo campo em `var body: some View` via `props.string()`, `props.double()`, etc.
-2. Nunca faça fallback silencioso — use `?? defaultValue` explicitamente
-3. Atualize o README com a nova prop na tabela de referência
+1. Accept the new field in `var body: some View` via `props.string()`, `props.double()`, etc.
+2. Never silently fall back — use `?? defaultValue` explicitly
+3. Update the README with the new prop in the reference table
 
-## Testes
+## Tests
 
-- Cobertura mínima: **90%** por arquivo novo
-- Testes devem usar mocks concretos — sem force unwrap em testes
-- Fixtures YAML ficam em `Tests/CaosTests/Fixtures/`
+- Minimum coverage: **90%** per new file
+- Tests must use concrete mocks — no force unwrap in tests
+- YAML fixtures go in `Tests/CaosTests/Fixtures/`
 
 ## Commits — Conventional Commits
 
-Todo commit e título de PR **devem** seguir o padrão [Conventional Commits](https://www.conventionalcommits.org/). O Danger bloqueia PRs que não seguem o formato.
+Every commit and PR title **must** follow the [Conventional Commits](https://www.conventionalcommits.org/) standard. Danger blocks PRs that don't follow the format.
 
-### Formato
+### Format
 
 ```
-<tipo>(<escopo opcional>): <descrição curta>
+<type>(<optional scope>): <short description>
 
-[corpo opcional]
+[optional body]
 
-[BREAKING CHANGE: <descrição> — opcional]
+[BREAKING CHANGE: <description> — optional]
 ```
 
-### Tipos válidos
+### Valid types
 
-| Tipo | Quando usar |
+| Type | When to use |
 |---|---|
-| `feat` | Nova funcionalidade visível ao usuário |
-| `fix` | Correção de bug |
-| `docs` | Apenas documentação |
-| `style` | Formatação, sem mudança de comportamento |
-| `refactor` | Refatoração sem mudança de comportamento |
-| `test` | Adição ou correção de testes |
-| `chore` | CI, dependências, configuração, build |
-| `perf` | Melhoria de performance |
-| `ci` | Mudanças específicas nos workflows de CI |
-| `build` | Sistema de build, Package.swift, XcodeGen |
-| `revert` | Reverte um commit anterior |
+| `feat` | New user-facing functionality |
+| `fix` | Bug fix |
+| `docs` | Documentation only |
+| `style` | Formatting, no behaviour change |
+| `refactor` | Refactoring with no behaviour change |
+| `test` | Adding or fixing tests |
+| `chore` | CI, dependencies, configuration, build |
+| `perf` | Performance improvement |
+| `ci` | Changes specific to CI workflows |
+| `build` | Build system, Package.swift, XcodeGen |
+| `revert` | Reverts a previous commit |
 
-### Exemplos
+### Examples
 
 ```bash
-feat: adiciona suporte a container grid horizontal
-fix(parser): corrige crash com YAML sem campo version
-docs: adiciona exemplo de reactive binding no README
-chore: atualiza XcodeGen para 2.43.0
-feat!: remove suporte a YAML v0          # breaking change
+feat: add horizontal grid container support
+fix(parser): fix crash with YAML missing version field
+docs: add reactive binding example to README
+chore: update XcodeGen to 2.43.0
+feat!: drop YAML v0 support          # breaking change
 ```
 
 ### Breaking changes
 
-Adicione `!` após o tipo ou inclua `BREAKING CHANGE:` no corpo para sinalizar que a versão major deve ser incrementada.
+Add `!` after the type or include `BREAKING CHANGE:` in the commit body to signal that the major version should be incremented.
 
-## Código de conduta
+## Code of conduct
 
-Seja respeitoso. Críticas são bem-vindas, ataques pessoais não.
+Be respectful. Constructive criticism is welcome; personal attacks are not.
