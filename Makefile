@@ -13,7 +13,7 @@ xcodegen: bootstrap
 setup: xcodegen
 
 open: xcodegen
-	open Caos.xcodeproj
+	open Example/CaosExample.xcodeproj
 
 clean:
 	rm -rf Caos.xcodeproj Example/CaosExample.xcodeproj .build
