@@ -95,15 +95,15 @@ cd Caos
 
 ```bash
 make setup   # installs XcodeGen via Homebrew (if needed) + generates both projects
-make open    # generates + opens Caos.xcodeproj directly in Xcode
+make open    # generates + opens Example/CaosExample.xcodeproj directly in Xcode
 ```
 
 Or step by step, without Make:
 
 ```bash
 brew install xcodegen          # one-time install
-xcodegen generate              # generates Caos.xcodeproj at the root
-open Caos.xcodeproj
+xcodegen generate --spec Example/project.yml              # generates CaosExample.xcodeproj at the root
+open Example/CaosExample.xcodeproj
 ```
 
 ### 3. Run tests
